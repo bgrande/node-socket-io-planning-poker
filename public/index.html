@@ -22,7 +22,7 @@
         <div class="col-lg-2">
             <div class="caption">Userlist</div>
             <ul id="userlist" class="list-group">
-                <!-- wird automatisch befüllt durch socketio -->
+                <!-- socket.io autofill and update -->
             </ul>
         </div>
     </div>
@@ -84,6 +84,8 @@
             socket.emit('username', username);
         });
 
+        document.username = username; // @todo change this!!!!
+
         socket.on('users', function(data) {
             if (undefined !== data && null !== data) {
                 setUserList(data);
@@ -126,9 +128,16 @@
 
             for (var i = 0; i < data.users.length; i++) {
                 var name = data.users[i].username,
-                    cvalue = "<div class=\"cardValue\"><img data-src=\"\" alt=\"Card Background\" /></div>";
-                if (name == username) {
-                    cvalue = "<div class=\"cardValue\">" + cardValue + "</div>";
+                    cvalue = "<div class=\"cardValue\">" +
+                             "<img src=\"img/back.png\" alt=\"Card Background\" />" +
+                             "..." +
+                             "</div>";
+
+                if (name == document.username) {
+                    cvalue = "<div class=\"cardValue\">" +
+                             "<img src=\"img/back.png\" alt=\"Card Background\" />" +
+                             cardValue +
+                             "</div>";
                 }
                 $userlist.append("<li class=\"list-group-item\">" + name + "</li>");
                 $cardList.append("<div class=\"col-lg-1 card\" id=\"" + name + "\"><div class=\"thumbnail\"><div class=\"caption\">" + name + "</div>" + cvalue + "</div></div>")
@@ -137,9 +146,7 @@
         };
 
         var setCardValue = function(data) {
-            console.debug(data, $('#username').val());
-            console.debug($('#' + $('#username').val()));
-            $('#' + $('#username').val()).children('.cardValue').text(data);
+            console.debug(data, document.username);
         }
 
     </script>
