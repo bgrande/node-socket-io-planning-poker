@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scrum planning poker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link  rel="stylesheet" href="css/bootstrap.min.css"/>
+</head>
+<body>
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="input-group">
+                <span class="input-group-addon">@</span>
+                <input id="username" type="text" class="form-control" placeholder="Username" />
+                <span class="input-group-btn">
+                    <button class="btn btn-default change-name" type="button">Change!</button>
+                </span>
+            </div>
+        </div>
+        <div class="col-lg-1">
+
+        </div>
+        <div class="col-lg-2">
+            <div class="caption">Userlist</div>
+            <ul id="userlist" class="list-group">
+                <!-- wird automatisch befüllt durch socketio -->
+            </ul>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-5 btn-toolbar">
+            <div class="btn-group">
+                <button type="button" class="card btn btn-default">0</button>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="card btn btn-default">1/2</button>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="card btn btn-default">1</button>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="card btn btn-default">2</button>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="card btn btn-default">3</button>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="card btn btn-default">5</button>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="card btn btn-default">8</button>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="card btn btn-default">13</button>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="card btn btn-default">20</button>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="card btn btn-default">40</button>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="card btn btn-default">100</button>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="card btn btn-default">?</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" id="cardlist">
+        <!-- wird automatisch befüllt -->
+    </div>
+
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        var socket = io.connect('http://localhost:3000'),
+            username = 'defaultname';
+
+        socket.on('connect', function() {
+            username = $('#username').val() !== '' ? $('#username').val() : username;
+            socket.emit('username', username);
+        });
+
+        socket.on('users', function(data) {
+            if (undefined !== data && null !== data) {
+                setUserList(data);
+            }
+        });
+
+        socket.on('sendCard', function(data) {
+            setCardValue(data)
+        });
+
+        $('.change-name').on('click', function(e) {
+            socket.emit('changeUsername', $('#username').val());
+        });
+
+        $('.card').on('click', function(e) {
+            var openToken = Math.random(),
+                that = this;
+
+            socket.emit('isOpen', openToken);
+            socket.on('isOpenSuccess', function(data) {
+                if (openToken === data) {
+                    var cardValue = $(that).text();
+                    socket.emit('setCard', cardValue);
+                }
+            });
+        });
+
+
+        var setUserList = function(data) {
+            var $userlist = $('#userlist'),
+                $cardList = $('#cardlist'),
+                cardValue = $cardList.children('.cardValue').text();
+
+            if (undefined === cardValue || null === cardValue) {
+                cardValue = '...';
+            }
+
+            $userlist.empty();
+            $cardList.empty();
+
+            for (var i = 0; i < data.users.length; i++) {
+                var name = data.users[i].username,
+                    cvalue = "<div class=\"cardValue\"><img data-src=\"\" alt=\"Card Background\" /></div>";
+                if (name == username) {
+                    cvalue = "<div class=\"cardValue\">" + cardValue + "</div>";
+                }
+                $userlist.append("<li class=\"list-group-item\">" + name + "</li>");
+                $cardList.append("<div class=\"col-lg-1 card\" id=\"" + name + "\"><div class=\"thumbnail\"><div class=\"caption\">" + name + "</div>" + cvalue + "</div></div>")
+
+            }
+        };
+
+        var setCardValue = function(data) {
+            console.debug(data, $('#username').val());
+            console.debug($('#' + $('#username').val()));
+            $('#' + $('#username').val()).children('.cardValue').text(data);
+        }
+
+    </script>
+</body>
+</html>

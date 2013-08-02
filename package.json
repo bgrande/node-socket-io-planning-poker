@@ -1,0 +1,24 @@
+{
+    "name": "planningpoker",
+    "version": "0.0.1",
+    "description": "node.js realtime planning poker",
+    "keywords": [
+        "realtime",
+        "planning",
+        "poker",
+        "scrum"
+    ],
+    "dependencies": {
+        "socket.io": "0.9.x",
+        "express": "3.3.x"
+    },
+    "optionalDependencies": {
+        "redis": "0.7.3"
+    },
+    "contributors": [
+        {
+            "name": "Benedikt Grande",
+            "email": "dev@bgrande.de"
+        }
+    ]
+}
