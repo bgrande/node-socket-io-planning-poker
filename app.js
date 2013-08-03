@@ -73,7 +73,13 @@ io.sockets.on('connection', function(socket) {
         }
         storage.desks[deskCount -1].cards[userId].value = data;
         storage.users[userId].cardValue = data;
+        
+        socket.broadcast.emit('sendCard', {
+            'username': storage.users[userId].username,
+            'cardValue': '...'
+        });
         socket.emit('sendCard', data);
+        // check if all cards are set: if true: close desk and open cards
     });
 
     socket.on('changeUsername', function(data) {
@@ -109,6 +115,10 @@ function getUsers(userId) {
         }
 
         userList.users[i].username = storage.users[x].username;
+        
+        if (undefined !== storage.users[x].cardValue && null !== storage.users[x].cardValue) {
+            userList.users[i].cardValue = '...';
+        }
 
         if (userId === x || false === storage.isOpen) {       
             userList.users[i].cardValue = storage.users[x].cardValue;

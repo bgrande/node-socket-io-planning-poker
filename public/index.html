@@ -6,78 +6,84 @@
     <link  rel="stylesheet" href="css/bootstrap.min.css"/>
 </head>
 <body>
-    <div class="row">
-        <div class="col-lg-3">
-            <div class="input-group">
-                <span class="input-group-addon">@</span>
-                <input id="username" type="text" class="form-control" placeholder="Username" />
-                <span class="input-group-btn">
-                    <button class="btn btn-default change-name" type="button">Change!</button>
-                </span>
-            </div>
-        </div>
-        <div class="col-lg-1">
+    <div style="clear: both; height: 20px;"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-9">
+                <div class="row">
+                    <div class="col-lg-6 btn-toolbar well well-large">
+                        <div class="input-group">
+                            <span class="input-group-addon">@</span>
+                            <input id="username" type="text" class="form-control" placeholder="Username" />
+                            <span class="input-group-btn">
+                                <button class="btn btn-default change-name" type="button">Change!</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="btn-toolbar well well-large">
+                        <div class="btn-group">
+                            <button type="button" class="card btn btn-default">0</button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="card btn btn-default">1/2</button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="card btn btn-default">1</button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="card btn btn-default">2</button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="card btn btn-default">3</button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="card btn btn-default">5</button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="card btn btn-default">8</button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="card btn btn-default">13</button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="card btn btn-default">20</button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="card btn btn-default">40</button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="card btn btn-default">100</button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="card btn btn-default">?</button>
+                        </div>
+                    </div>
+                </div>
 
-        </div>
-        <div class="col-lg-2">
-            <div class="caption">Userlist</div>
-            <ul id="userlist" class="list-group">
-                <!-- socket.io autofill and update -->
-            </ul>
+                <div class="row btn-toolbar well well-large" id="cardlist">
+                    <!-- wird automatisch befüllt -->
+                </div>
+
+            </div>
+            <div class="col-lg-1"></div>
+            <div class="col-lg-2">
+                <div class="label caption">Userlist</div>
+                <ul id="userlist" class="list-group">
+                    <!-- socket.io autofill and update -->
+                </ul>
+            </div>
         </div>
     </div>
-
-    <div class="row">
-        <div class="col-lg-5 btn-toolbar">
-            <div class="btn-group">
-                <button type="button" class="card btn btn-default">0</button>
-            </div>
-            <div class="btn-group">
-                <button type="button" class="card btn btn-default">1/2</button>
-            </div>
-            <div class="btn-group">
-                <button type="button" class="card btn btn-default">1</button>
-            </div>
-            <div class="btn-group">
-                <button type="button" class="card btn btn-default">2</button>
-            </div>
-            <div class="btn-group">
-                <button type="button" class="card btn btn-default">3</button>
-            </div>
-            <div class="btn-group">
-                <button type="button" class="card btn btn-default">5</button>
-            </div>
-            <div class="btn-group">
-                <button type="button" class="card btn btn-default">8</button>
-            </div>
-            <div class="btn-group">
-                <button type="button" class="card btn btn-default">13</button>
-            </div>
-            <div class="btn-group">
-                <button type="button" class="card btn btn-default">20</button>
-            </div>
-            <div class="btn-group">
-                <button type="button" class="card btn btn-default">40</button>
-            </div>
-            <div class="btn-group">
-                <button type="button" class="card btn btn-default">100</button>
-            </div>
-            <div class="btn-group">
-                <button type="button" class="card btn btn-default">?</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="row" id="cardlist">
-        <!-- wird automatisch befüllt -->
-    </div>
-
+    
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript">
         var socket = io.connect('http://localhost:3000'),
-            username = 'defaultname';
+            username = 'name' + Math.round(Math.random() * Math.random() * 100); // change this!
 
         socket.on('connect', function() {
             username = $('#username').val() !== '' ? $('#username').val() : username;
@@ -93,10 +99,19 @@
         });
 
         socket.on('sendCard', function(data) {
-            setCardValue(data, document.username)
+            var username = document.username,
+                cardValue = data;
+                
+            if ('object' == typeof data) {
+                username = data.username;
+                cardValue = data.cardValue;
+            } 
+            
+            setCardValue(cardValue, username)
         });
         
         socket.on('closeDesk', function(data) {
+            
             // close desk (no more card selecting)
             // and open desk
         });
@@ -126,24 +141,26 @@
                 $cardList = $('#cardlist');                           
 
             $userlist.empty();
-            $cardList.empty();
+            $cardList.empty('.card');
 
             for (var i = 0; i < data.users.length; i++) {
                 var name = data.users[i].username,
                     cardValue = data.users[i].cardValue;
                     
                 if (undefined === cardValue || null === cardValue || '' == cardValue) {
-                    cardValue = '<img src=\"img/back.png\" alt=\"Card Background\" />';
+                    card = '<img class="card-background" src=\"img/back.png\" alt=\"Card Background\" />';
+                } else {
+                    card = '<h1 class="cardValue caption" style="margin: auto"><span>' + cardValue + '</span></h1>';
                 }
 
                 $userlist.append(
                     "<li class=\"list-group-item\">" + name + "</li>"
                 );
                 $cardList.append(
-                    "<div class=\"col-lg-2 card\" id=\"" + name + "\">" + 
-                    "    <div class=\"thumbnail\">" + 
-                    "      <div class=\"caption\">" + name + "</div>" + 
-                    "      <div class=\"cardValue\">" + cardValue + "</div>" + 
+                    "<div class=\"col-lg-2 card\" id=\"" + name + "\" style=\"margin: auto\">" + 
+                    "    <div class=\"thumbnail\" style=\"margin: auto\">" + 
+                    "      <div class=\"caption\"><h5>" + name + "<h5></div>" + 
+                           card + 
                     "    </div>" +
                     "</div>"
                 );
@@ -151,10 +168,17 @@
         };
 
         var setCardValue = function(data, username) {
-            console.debug(data, document.username, $('#' + document.username).find('div.cardValue'));
-            $('#' + document.username).find('.cardValue').text(data);
+            var $card = $('#' + username),
+                $cardValue = $card.find('.cardValue');
+                
+            if ($cardValue.text()) {
+                $cardValue.html('<span>' + data + '</span>');
+            } else {
+                $card.find('.card-background').remove();
+                $card.find('.thumbnail').append('<h1 class="cardValue caption" style="margin: auto"><span>' + data + '</span></h1>');
+            }
+            
         }
-    
     </script>
 </body>
 </html>
