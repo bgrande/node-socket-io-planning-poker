@@ -52,8 +52,8 @@ io.sockets.on('connection', function(socket) {
     // send initial userlist
     socket.on('username', function(data) {
         updateUsername(data, userId);
-        socket.emit('users', getUsers(storage));
-        socket.broadcast.emit('users', getUsers(storage))
+        socket.emit('users', getUsers(userId));
+        socket.broadcast.emit('users', getUsers(userId))
     });
 
     socket.on('isOpen', function(data) {
@@ -72,13 +72,14 @@ io.sockets.on('connection', function(socket) {
             };
         }
         storage.desks[deskCount -1].cards[userId].value = data;
+        storage.users[userId].cardValue = data;
         socket.emit('sendCard', data);
     });
 
     socket.on('changeUsername', function(data) {
         updateUsername(data, userId);
-        socket.emit('users', getUsers(storage));
-        socket.broadcast.emit('users', getUsers(storage));
+        socket.emit('users', getUsers(userId));
+        socket.broadcast.emit('users', getUsers(userId));
     });
 
     socket.on('disconnect', function (data) {
@@ -96,7 +97,7 @@ io.sockets.on('connection', function(socket) {
     // edit/add title/name
 });
 
-function getUsers() {
+function getUsers(userId) {
     var userList = {
             'users': []
         },
@@ -108,6 +109,10 @@ function getUsers() {
         }
 
         userList.users[i].username = storage.users[x].username;
+
+        if (userId === x || false === storage.isOpen) {       
+            userList.users[i].cardValue = storage.users[x].cardValue;
+        }
         i++;
     }
 

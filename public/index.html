@@ -84,7 +84,7 @@
             socket.emit('username', username);
         });
 
-        document.username = username; // @todo change this!!!!
+        document.username = username; // @todo bad style! change this!!!!
 
         socket.on('users', function(data) {
             if (undefined !== data && null !== data) {
@@ -93,11 +93,18 @@
         });
 
         socket.on('sendCard', function(data) {
-            setCardValue(data)
+            setCardValue(data, document.username)
+        });
+        
+        socket.on('closeDesk', function(data) {
+            // close desk (no more card selecting)
+            // and open desk
         });
 
         $('.change-name').on('click', function(e) {
-            socket.emit('changeUsername', $('#username').val());
+            var newName = $('#username').val();
+            socket.emit('changeUsername', newName);
+            document.username = newName;
         });
 
         $('.card').on('click', function(e) {
@@ -116,39 +123,38 @@
 
         var setUserList = function(data) {
             var $userlist = $('#userlist'),
-                $cardList = $('#cardlist'),
-                cardValue = $cardList.children('.cardValue').text();
-
-            if (undefined === cardValue || null === cardValue) {
-                cardValue = '...';
-            }
+                $cardList = $('#cardlist');                           
 
             $userlist.empty();
             $cardList.empty();
 
             for (var i = 0; i < data.users.length; i++) {
                 var name = data.users[i].username,
-                    cvalue = "<div class=\"cardValue\">" +
-                             "<img src=\"img/back.png\" alt=\"Card Background\" />" +
-                             "..." +
-                             "</div>";
-
-                if (name == document.username) {
-                    cvalue = "<div class=\"cardValue\">" +
-                             "<img src=\"img/back.png\" alt=\"Card Background\" />" +
-                             cardValue +
-                             "</div>";
+                    cardValue = data.users[i].cardValue;
+                    
+                if (undefined === cardValue || null === cardValue || '' == cardValue) {
+                    cardValue = '<img src=\"img/back.png\" alt=\"Card Background\" />';
                 }
-                $userlist.append("<li class=\"list-group-item\">" + name + "</li>");
-                $cardList.append("<div class=\"col-lg-1 card\" id=\"" + name + "\"><div class=\"thumbnail\"><div class=\"caption\">" + name + "</div>" + cvalue + "</div></div>")
 
+                $userlist.append(
+                    "<li class=\"list-group-item\">" + name + "</li>"
+                );
+                $cardList.append(
+                    "<div class=\"col-lg-2 card\" id=\"" + name + "\">" + 
+                    "    <div class=\"thumbnail\">" + 
+                    "      <div class=\"caption\">" + name + "</div>" + 
+                    "      <div class=\"cardValue\">" + cardValue + "</div>" + 
+                    "    </div>" +
+                    "</div>"
+                );
             }
         };
 
-        var setCardValue = function(data) {
-            console.debug(data, document.username);
+        var setCardValue = function(data, username) {
+            console.debug(data, document.username, $('#' + document.username).find('div.cardValue'));
+            $('#' + document.username).find('.cardValue').text(data);
         }
-
+    
     </script>
 </body>
 </html>
