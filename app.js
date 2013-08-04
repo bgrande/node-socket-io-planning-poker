@@ -88,8 +88,16 @@ io.sockets.on('connection', function(socket) {
             'username': storage.users[userId].username,
             'cardValue': '...'
         });
+        
         socket.emit('sendCard', data);
-        // check if all cards are set: if true: close desk and open cards
+        
+        if (checkIfAllCardsSet(deskCount)) {
+            //storage.isOpen = false;
+            console.log("all closed");
+            // @todo send all card values by user to all users
+            socket.emit('closeDesk', deskCount);
+            socket.broadcast.emit('closeDesk', deskCount);
+        }
     });
 
     socket.on('changeUsername', function(data) {
@@ -157,6 +165,25 @@ function checkCardValue(data) {
         if (data == storage.allowedCardValues[i]) {
             return true;
         }
+    }
+    return false;
+}
+
+function checkIfAllCardsSet(deskCount) {
+    var cardCount = userCount = 0,
+        users = storage.users,
+        cards = storage.desks[deskCount - 1].cards;
+        
+    for (x in users) {
+        userCount++;
+    }
+    
+    for (x in cards) {
+        cardCount++;        
+    } 
+
+    if (userCount == cardCount) {
+        return true;
     }
     return false;
 }

@@ -122,9 +122,11 @@
         });
         
         socket.on('closeDesk', function(data) {
-            
+            if (data) {
+                
+            }
             // close desk (no more card selecting)
-            // and open desk
+            // and open cards
         });
 
         $('.change-name').on('click', function(e) {
