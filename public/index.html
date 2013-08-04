@@ -23,7 +23,9 @@
                     <div class="col-lg-1">
                     </div>
                     <div class="col-lg-5 btn-toolbar well well-large">
-                        <button type="button" class="admin btn btn-default">end round</button>
+                        <button type="button" class="admin btn btn-default">close</button>
+                        <button type="button" class="admin btn btn-default">new</button>
+                        <button type="button" class="admin btn btn-default">reset</button>
                     </div>
                 </div>
                 
@@ -162,8 +164,9 @@
                     card = '<h1 class="cardValue caption" style="margin: auto"><span>' + cardValue + '</span></h1>';
                 }
 
+    // '<button type=\"button\" class=\"card btn btn-small\" style=\"float: right;\">X</button>'
                 $userlist.append(
-                    "<li class=\"list-group-item\">" + name + "</li>"
+                    "<li class=\"list-group-item\">" + name + " </li>"
                 );
                 $cardList.append(
                     "<div class=\"col-lg-2 card\" id=\"" + name + "\" style=\"margin: auto\">" + 

@@ -4,6 +4,7 @@
  * @category  [[category]]
  * @copyright [[Copyright]]
  * @author    Benedikt Grande <benedikt.grande@mayflower.de>
+ * @author    Diana Hartmann <diana.hartmann@mayflower.de>
  */
 
 var port = 3000,
@@ -112,6 +113,8 @@ io.sockets.on('connection', function(socket) {
     // edit/add title/name
 });
 
+
+// @todo these functions should be part of a (helper) module
 function getUsers(userId) {
     var userList = {
             'users': []
@@ -124,6 +127,7 @@ function getUsers(userId) {
         }
 
         userList.users[i].username = storage.users[x].username;
+        userList.users[i].admin = storage.users[x].admin;
         
         if (undefined !== storage.users[x].cardValue && null !== storage.users[x].cardValue) {
             userList.users[i].cardValue = '...';
@@ -142,6 +146,7 @@ function updateUsername(data, id) {
     if ('string' == typeof data) {
         if (!storage.users[id]) {
             storage.users[id] = {};
+            storage.users[id].admin = true;
         }
         storage.users[id].username = data;
     }
@@ -150,7 +155,6 @@ function updateUsername(data, id) {
 function checkCardValue(data) {
     for (var i = 0; i < storage.allowedCardValues.length; i++) {
         if (data == storage.allowedCardValues[i]) {
-            console.log("card not allowed!");
             return true;
         }
     }
