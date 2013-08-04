@@ -14,7 +14,10 @@ var port = 3000,
         'admin': null,
         'isOpen': true,
         'users': [],
-        'desks': []
+        'desks': [],
+        'allowedCardValues': [
+            0, '1/2', 1, 2, 3, 5, 8, 13, 20, 40, 100, '?'
+        ]
     };
 
 server.listen(port);
@@ -71,6 +74,12 @@ io.sockets.on('connection', function(socket) {
                 'value': false
             };
         }
+        
+        if (!checkCardValue(data)) {
+            socket.emit('sendCard', false);
+            return;
+        }
+        
         storage.desks[deskCount -1].cards[userId].value = data;
         storage.users[userId].cardValue = data;
         
@@ -136,4 +145,14 @@ function updateUsername(data, id) {
         }
         storage.users[id].username = data;
     }
+}
+
+function checkCardValue(data) {
+    for (var i = 0; i < storage.allowedCardValues.length; i++) {
+        if (data == storage.allowedCardValues[i]) {
+            console.log("card not allowed!");
+            return true;
+        }
+    }
+    return false;
 }

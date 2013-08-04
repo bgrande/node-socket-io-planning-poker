@@ -20,6 +20,11 @@
                             </span>
                         </div>
                     </div>
+                    <div class="col-lg-1">
+                    </div>
+                    <div class="col-lg-5 btn-toolbar well well-large">
+                        <button type="button" class="admin btn btn-default">end round</button>
+                    </div>
                 </div>
                 
                 <div class="row">
@@ -106,6 +111,10 @@
                 username = data.username;
                 cardValue = data.cardValue;
             } 
+            
+            if (false == cardValue) {
+                cardValue = 'nice try!';
+            }
             
             setCardValue(cardValue, username)
         });
