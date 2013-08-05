@@ -55,7 +55,7 @@ io.sockets.on('connection', function(socket) {
 
     // send initial userlist
     socket.on('username', function(data) {
-        // @todo check if username already exists and emit error if so
+        // @todo check username and change it if already in use
         updateUsername(data, userId);
         socket.emit('users', getUsers(userId));
         socket.broadcast.emit('users', getUsers(userId))
@@ -102,6 +102,12 @@ io.sockets.on('connection', function(socket) {
     });
 
     socket.on('changeUsername', function(data) {
+        if (!checkUsername(data)) {
+            socket.emit('users', {
+                'error': 'username already in use!'
+            });
+            return;
+        }
         updateUsername(data, userId);
         socket.emit('users', getUsers(userId));
         socket.broadcast.emit('users', getUsers(userId));
@@ -171,20 +177,39 @@ function checkCardValue(data) {
 }
 
 function checkIfAllCardsSet(deskCount) {
-    var cardCount = userCount = 0,
+    var cardCount = 0,
+        userCount = 0,
         users = storage.users,
         cards = storage.desks[deskCount - 1].cards;
         
-    for (x in users) {
-        userCount++;
-    }
-    
-    for (x in cards) {
-        cardCount++;        
-    } 
+    userCount = countObject(users);
+    cardCount = countObject(cards);
 
     if (userCount == cardCount) {
         return true;
     }
     return false;
+}
+
+/**
+ * helper function to count object lists
+ *
+ * @param object
+ * @returns {number}
+ */
+function countObject(object) {
+    var count = 0;
+    for (x in object) {
+        count++;
+    }
+    return count;
+}
+
+function checkUsername(data) {
+    for (x in storage.users) {
+        if (data == storage.users[x].username) {
+            return false;
+        }
+    }
+    return true;
 }

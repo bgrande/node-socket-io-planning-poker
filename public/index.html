@@ -101,8 +101,11 @@
         document.username = username; // @todo bad style! change this!!!!
 
         socket.on('users', function(data) {
-            if (undefined !== data && null !== data) {
+            if (undefined !== data && null !== data && undefined === data.error) {
                 setUserList(data);
+            } else {
+                // @todo make error handling right
+                alert('it did not work: ' + data.error);
             }
         });
 
