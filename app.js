@@ -55,6 +55,7 @@ io.sockets.on('connection', function(socket) {
 
     // send initial userlist
     socket.on('username', function(data) {
+        // @todo check if username already exists and emit error if so
         updateUsername(data, userId);
         socket.emit('users', getUsers(userId));
         socket.broadcast.emit('users', getUsers(userId))

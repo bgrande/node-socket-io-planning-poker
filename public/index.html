@@ -90,10 +90,11 @@
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript">
         var socket = io.connect('http://localhost:3000'),
-            username = 'name' + Math.round(Math.random() * Math.random() * 100); // change this!
+            username = 'name' + Math.round(Math.random() * Math.random() * 100),
+            usernameSet = $('#username').val();
 
         socket.on('connect', function() {
-            username = $('#username').val() !== '' ? $('#username').val() : username;
+            username = usernameSet !== '' ? usernameSet : username;
             socket.emit('username', username);
         });
 
@@ -154,7 +155,7 @@
                 $cardList = $('#cardlist');                           
 
             $userlist.empty();
-            $cardList.empty('.card');
+            $cardList.empty();
 
             for (var i = 0; i < data.users.length; i++) {
                 var name = data.users[i].username,
@@ -191,7 +192,6 @@
                 $card.find('.card-background').remove();
                 $card.find('.thumbnail').append('<h1 class="cardValue caption" style="margin: auto"><span>' + data + '</span></h1>');
             }
-            
         }
     </script>
 </body>
