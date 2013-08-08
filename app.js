@@ -36,10 +36,13 @@ app.get('/:subdir/:name', function(req, res) {
     res.sendfile(__dirname + '/public/' + subdir + '/' + name);
 });
 
+// @todo socket handling will be exported into own module
 // initialize connection for socketio
 io.sockets.on('connection', function(socket) {
     var userId = socket.id,
         deskCount = storage.desks.length;
+
+    // @todo use userId to check if connecting user has already been connected
 
     // set first user as desk admin
     if (0 == deskCount) {
@@ -57,7 +60,10 @@ io.sockets.on('connection', function(socket) {
     socket.on('username', function(data) {
         // @todo check username and change it if already in use
         updateUsername(data, userId);
-        socket.emit('users', getUsers(userId));
+        socket.emit('users', {
+            'userId': userId,
+            'users': getUsers(userId)
+        });
         socket.broadcast.emit('users', getUsers(userId))
     });
 

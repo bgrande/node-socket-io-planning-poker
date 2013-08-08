@@ -70,8 +70,14 @@
                     </div>
                 </div>
 
-                <div class="row btn-toolbar well well-large" id="cardlist">
-                    <!-- wird automatisch befüllt -->
+                <div class="container">
+                    <div class="row topic">
+                        <h3>Current topic has to be described here</h3>
+                    </div>
+
+                    <div class="row btn-toolbar well well-large" id="cardlist">
+                        <!-- wird automatisch befüllt -->
+                    </div>
                 </div>
 
             </div>
@@ -98,11 +104,17 @@
             socket.emit('username', username);
         });
 
+        // @todo we need a private user storage object!
         document.username = username; // @todo bad style! change this!!!!
 
         socket.on('users', function(data) {
             if (undefined !== data && null !== data && undefined === data.error) {
-                setUserList(data);
+                if (undefined === data.users) {
+                    setUserList(data);
+                } else {
+                    setUserList(data.users);
+                    document.userId = data.userId; // @todo bad style! change!!!!
+                }
             } else {
                 // @todo make error handling right
                 alert('it did not work: ' + data.error);
