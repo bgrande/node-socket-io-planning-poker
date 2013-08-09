@@ -3,7 +3,7 @@
 * node app
 * http://localhost:3000
 
-# TODO:
+# TODO
 * tests
 * modularize
 * recurring user recognition (after reload)
