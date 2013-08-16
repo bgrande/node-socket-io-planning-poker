@@ -39,19 +39,17 @@ app.get('/:subdir/:name', function(req, res) {
 // @todo socket handling will be exported into own module
 // initialize connection for socketio
 io.sockets.on('connection', function(socket) {
-    var userId = socket.id,
-        deskCount = storage.desks.length;
+    var userId = socket.id;
 
     // @todo use userId to check if connecting user has already been connected
 
     // set first user as desk admin
-    if (0 == deskCount) {
+    if (0 === storage.desks.length) {
         storage.admin = userId;
         storage.desks[0] = {};
         storage.desks[0].cards = [];
         if (!storage.desks[0].cards[userId]) {
             storage.desks[0].cards[userId] = {
-                'value': false
             };
         }
     }
@@ -59,6 +57,9 @@ io.sockets.on('connection', function(socket) {
     // send initial userlist
     socket.on('username', function(data) {
         // @todo check username and change it if already in use
+        if (!checkUsername(data)) {
+            data = data + '2';
+        }
         updateUsername(data, userId);
         socket.emit('users', {
             'userId': userId,
@@ -76,16 +77,16 @@ io.sockets.on('connection', function(socket) {
     });
 
     socket.on('setCard', function(data) {
-        var deskCount = storage.desks.length;
-        if (!storage.desks[deskCount - 1].cards[userId]) {
-            storage.desks[deskCount -1].cards[userId] = {
-                'value': false
-            };
-        }
+        var deskCount = storage.desks.length;        
         
         if (!checkCardValue(data)) {
             socket.emit('sendCard', false);
             return;
+        }
+        
+        if (!storage.desks[deskCount - 1].cards[userId]) {
+            storage.desks[deskCount -1].cards[userId] = {                
+            };
         }
         
         storage.desks[deskCount -1].cards[userId].value = data;
@@ -97,13 +98,16 @@ io.sockets.on('connection', function(socket) {
         });
         
         socket.emit('sendCard', data);
-        
+
         if (checkIfAllCardsSet(deskCount)) {
-            //storage.isOpen = false;
-            console.log("all closed");
-            // @todo send all card values by user to all users
-            socket.emit('closeDesk', deskCount);
-            socket.broadcast.emit('closeDesk', deskCount);
+            var cardValues = getCardValuesByUsername(storage.desks[deskCount - 1].cards);
+            storage.isOpen = false;
+            closedDesk = {
+                'desk': deskCount,
+                'cards': cardValues
+            };
+            socket.emit('closeDesk', closedDesk);
+            socket.broadcast.emit('closeDesk', closedDesk);
         }
     });
 
@@ -111,11 +115,15 @@ io.sockets.on('connection', function(socket) {
         if (!checkUsername(data)) {
             socket.emit('users', {
                 'error': 'username already in use!'
-            });
+            });            
             return;
-        }
-        updateUsername(data, userId);
-        socket.emit('users', getUsers(userId));
+        } 
+        
+        updateUsername(data, userId);        
+        socket.emit('users', {
+            'userId': userId,
+            'users': getUsers(userId)
+        });
         socket.broadcast.emit('users', getUsers(userId));
     });
 
@@ -123,12 +131,10 @@ io.sockets.on('connection', function(socket) {
         // remove specific user!
     });
 
-    // connect and add user
     // disconnect and remove user
     // add table
     // start game
     // end game
-    // auto open table
     // manage users
     // allow visitor
     // edit/add title/name
@@ -182,6 +188,17 @@ function checkCardValue(data) {
     return false;
 }
 
+function getCardValuesByUsername(cards) {
+    var cardList = {};
+    
+    for (x in cards) {
+        name = storage.users[x].username;
+        cardList[name] = cards[x];
+    }
+    
+    return cardList;
+}
+
 function checkIfAllCardsSet(deskCount) {
     var cardCount = 0,
         userCount = 0,
@@ -190,8 +207,8 @@ function checkIfAllCardsSet(deskCount) {
         
     userCount = countObject(users);
     cardCount = countObject(cards);
-
-    if (userCount == cardCount) {
+console.log('users: ' + userCount + ', cards: ' + cardCount);
+    if (userCount === cardCount) {
         return true;
     }
     return false;

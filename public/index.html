@@ -30,7 +30,7 @@
                 </div>
                 
                 <div class="row">
-                    <div class="btn-toolbar well well-large">
+                    <div class="btn-toolbar well well-large vote-buttons">
                         <div class="btn-group">
                             <button type="button" class="card btn btn-default">0</button>
                         </div>
@@ -109,11 +109,11 @@
 
         socket.on('users', function(data) {
             if (undefined !== data && null !== data && undefined === data.error) {
-                if (undefined === data.users) {
-                    setUserList(data);
-                } else {
+                if (undefined !== data.userId && undefined !== data.users) {
                     setUserList(data.users);
                     document.userId = data.userId; // @todo bad style! change!!!!
+                } else {
+                    setUserList(data);                    
                 }
             } else {
                 // @todo make error handling right
@@ -130,7 +130,7 @@
                 cardValue = data.cardValue;
             } 
             
-            if (false == cardValue) {
+            if (false === cardValue) {
                 cardValue = 'nice try!';
             }
             
@@ -138,11 +138,15 @@
         });
         
         socket.on('closeDesk', function(data) {
-            if (data) {
-                
+        console.debug(data);
+            if (data.desk) {
+                $('.vote-buttons').find('.card').prop('disabled', true);
             }
-            // close desk (no more card selecting)
-            // and open cards
+            
+            for (x in data.cards) {
+                var user = '#' + x;
+                $(user).find('.cardValue').children('span').text(data.cards[x].value);
+            }
         });
 
         $('.change-name').on('click', function(e) {
@@ -195,7 +199,7 @@
                 $cardList.append(
                     "<div class=\"col-lg-2 card\" id=\"" + name + "\" style=\"margin: auto\">" + 
                     "    <div class=\"thumbnail\" " + style + ">" +
-                    "      <div class=\"caption\"><h5>" + name + "<h5></div>" +
+                    "      <div class=\"caption\"><h5>" + name + "</h5></div>" +
                            card + 
                     "    </div>" +
                     "</div>"
