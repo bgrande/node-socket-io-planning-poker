@@ -142,6 +142,13 @@ io.sockets.on('connection', function(socket) {
 
 
 // @todo these functions should be part of a (helper) module
+/**
+ * function to map list of userId identified uers to array
+ *
+ * @param userId string
+ *
+ * @returns array
+ */
 function getUsers(userId) {
     var userList = {
             'users': []
@@ -169,6 +176,15 @@ function getUsers(userId) {
     return userList;
 }
 
+
+/**
+ * function to update the username
+ *
+ * @param data string
+ * @param id string
+ *
+ * @returns void
+ */
 function updateUsername(data, id) {
     if ('string' == typeof data) {
         if (!storage.users[id]) {
@@ -179,15 +195,14 @@ function updateUsername(data, id) {
     }
 }
 
-function checkCardValue(data) {
-    for (var i = 0; i < storage.allowedCardValues.length; i++) {
-        if (data == storage.allowedCardValues[i]) {
-            return true;
-        }
-    }
-    return false;
-}
 
+/**
+ * function to map cardValues from userIds to usernames
+ *
+ * @param cards object
+ *
+ * @returns object
+ */
 function getCardValuesByUsername(cards) {
     var cardList = {};
     
@@ -199,6 +214,29 @@ function getCardValuesByUsername(cards) {
     return cardList;
 }
 
+/**
+ * helper function to check if card value is allowed
+ *
+ * @param data string
+ *
+ * @returns bool
+ */
+function checkCardValue(data) {
+    for (var i = 0; i < storage.allowedCardValues.length; i++) {
+        if (data == storage.allowedCardValues[i]) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * helper function to check if all cards are already set
+ *
+ * @param deskCount int
+ *
+ * @returns bool
+ */
 function checkIfAllCardsSet(deskCount) {
     var cardCount = 0,
         userCount = 0,
@@ -207,7 +245,7 @@ function checkIfAllCardsSet(deskCount) {
         
     userCount = countObject(users);
     cardCount = countObject(cards);
-console.log('users: ' + userCount + ', cards: ' + cardCount);
+
     if (userCount === cardCount) {
         return true;
     }
@@ -217,8 +255,9 @@ console.log('users: ' + userCount + ', cards: ' + cardCount);
 /**
  * helper function to count object lists
  *
- * @param object
- * @returns {number}
+ * @param object object
+ *
+ * @returns int
  */
 function countObject(object) {
     var count = 0;
@@ -228,6 +267,13 @@ function countObject(object) {
     return count;
 }
 
+/**
+ * helper function to check if username is already set
+ *
+ * @param data string
+ *
+ * @returns bool
+ */
 function checkUsername(data) {
     for (x in storage.users) {
         if (data == storage.users[x].username) {
