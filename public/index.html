@@ -146,7 +146,6 @@
         });
         
         socket.on('closeDesk', function(data) {
-        console.debug(data);
             if (data.desk) {
                 $('.vote-buttons').find('.card').prop('disabled', true);
             }
