@@ -13,3 +13,4 @@
 * modularize and refactor
 * administration (close round, (re)start round, set (ticket) topic, kick (inactive) users)
 * set ticket topic for current desk
+* heroku deploy
