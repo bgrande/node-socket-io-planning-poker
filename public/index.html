@@ -96,22 +96,30 @@
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript">
         var socket = io.connect('http://localhost:3000'),
-            username = 'name' + Math.round(Math.random() * Math.random() * 100),
+            cookieUsername = getCookie('username'),
+            userId = getCookie('userId'),
+            username = (undefined !== cookieUsername && null !== cookieUsername) ? cookieUsername : 'name' + Math.round(Math.random() * Math.random() * 100),
             usernameSet = $('#username').val();
 
         socket.on('connect', function() {
             username = usernameSet !== '' ? usernameSet : username;
-            socket.emit('username', username);
-        });
 
-        // @todo we need a private user storage object!
-        document.username = username; // @todo bad style! change this!!!!
+            userObject = {
+                'userId': userId,
+                'username': username
+            };
+
+
+            socket.emit('username', userObject);
+        });
+        
+        setCookie('username', username);
 
         socket.on('users', function(data) {
             if (undefined !== data && null !== data && undefined === data.error) {
                 if (undefined !== data.userId && undefined !== data.users) {
                     setUserList(data.users);
-                    document.userId = data.userId; // @todo bad style! change!!!!
+                    setCookie('userId', data.userId);
                 } else {
                     setUserList(data);                    
                 }
@@ -122,7 +130,7 @@
         });
 
         socket.on('sendCard', function(data) {
-            var username = document.username,
+            var username = getCookie('username'),
                 cardValue = data;
                 
             if ('object' == typeof data) {
@@ -152,7 +160,7 @@
         $('.change-name').on('click', function(e) {
             var newName = $('#username').val();
             socket.emit('changeUsername', newName);
-            document.username = newName;
+            setCookie('username', newName);
         });
 
         $('.card').on('click', function(e) {
@@ -189,7 +197,7 @@
                 }
 
     // '<button type=\"button\" class=\"card btn btn-small\" style=\"float: right;\">X</button>'
-                if (name === document.username) {
+                if (name === getCookie('username')) {
                     style = "style=\"background-color: #82FA58;\"";
                 }
 
@@ -217,6 +225,44 @@
                 $card.find('.card-background').remove();
                 $card.find('.thumbnail').append('<h1 class="cardValue caption" style="margin: auto"><span>' + data + '</span></h1>');
             }
+        }
+        
+        function setCookie(name, value, expiration)
+        {
+            'use strict';
+            var cookieValue = null,
+                expire = new Date();
+            
+            if (undefined === expiration) {
+                expiration = 1000 * 3600; // 1 hour in milliseconds
+            }
+
+            expire.setTime(expire.getTime() + expiration);
+            var cookieValue = escape(value) + "; expires=" + expire.toUTCString();
+            document.cookie = name + "=" + cookieValue;
+        }
+        
+        function getCookie(name)
+        {
+            'use strict';
+            var cookie = document.cookie,
+                value = null,
+                start = cookie.indexOf(" " + name + "=");
+                
+            if (start == -1) {
+                start = cookie.indexOf(name + "=");
+            }
+            
+            if (start !== -1) {
+              start = cookie.indexOf("=", start) + 1;
+              var end = cookie.indexOf(";", start);
+              if (end == -1) {
+                end = cookie.length;
+              }
+              value = unescape(cookie.substring(start, end));
+            }
+            
+            return value;
         }
     </script>
 </body>

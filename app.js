@@ -12,9 +12,10 @@ var port = 3000,
     server = require('http').createServer(app),
     io = require('socket.io').listen(server),
     storage = {
+        'sessions': {},
         'admin': null,
         'isOpen': true,
-        'users': [],
+        'users': {},
         'desks': [],
         'allowedCardValues': [
             0, '1/2', 1, 2, 3, 5, 8, 13, 20, 40, 100, '?'
@@ -40,27 +41,39 @@ app.get('/:subdir/:name', function(req, res) {
 // initialize connection for socketio
 io.sockets.on('connection', function(socket) {
     var userId = socket.id;
-
-    // @todo use userId to check if connecting user has already been connected
-
+    
     // set first user as desk admin
-    if (0 === storage.desks.length) {
+    if (0 == storage.desks.length) {
         storage.admin = userId;
         storage.desks[0] = {};
         storage.desks[0].cards = [];
         if (!storage.desks[0].cards[userId]) {
-            storage.desks[0].cards[userId] = {
-            };
+            storage.desks[0].cards[userId] = {};
         }
     }
 
     // send initial userlist
     socket.on('username', function(data) {
-        // @todo check username and change it if already in use
-        if (!checkUsername(data)) {
+        var username = data,
+            oldUserId = null; 
+        
+        if ('object' == typeof data) {
+            if (null !== data.userId) {
+                oldUserId = data.userId;
+            }
+            username = data.username;
+        } 
+        
+        // if we got a new userId update the user and kill the old one!
+        if (oldUserId !== userId && undefined !== storage.users[oldUserId] && null !== storage.users[oldUserId]) {
+            delete storage.users[oldUserId];
+        }
+    
+        if (!checkUsername(username)) {
             data = data + '2';
         }
-        updateUsername(data, userId);
+        updateUsername(username, userId);
+        
         socket.emit('users', {
             'userId': userId,
             'users': getUsers(userId)
@@ -85,8 +98,7 @@ io.sockets.on('connection', function(socket) {
         }
         
         if (!storage.desks[deskCount - 1].cards[userId]) {
-            storage.desks[deskCount -1].cards[userId] = {                
-            };
+            storage.desks[deskCount -1].cards[userId] = {};
         }
         
         storage.desks[deskCount -1].cards[userId].value = data;
@@ -128,7 +140,7 @@ io.sockets.on('connection', function(socket) {
     });
 
     socket.on('disconnect', function (data) {
-        // remove specific user!
+        // @todo remove specific user from storage!
     });
 
     // disconnect and remove user
@@ -189,7 +201,6 @@ function updateUsername(data, id) {
     if ('string' == typeof data) {
         if (!storage.users[id]) {
             storage.users[id] = {};
-            storage.users[id].admin = true;
         }
         storage.users[id].username = data;
     }
@@ -207,8 +218,10 @@ function getCardValuesByUsername(cards) {
     var cardList = {};
     
     for (x in cards) {
-        name = storage.users[x].username;
-        cardList[name] = cards[x];
+        if (storage.users[x]) {
+            name = storage.users[x].username;
+            cardList[name] = cards[x];
+        }
     }
     
     return cardList;
@@ -245,7 +258,8 @@ function checkIfAllCardsSet(deskCount) {
         
     userCount = countObject(users);
     cardCount = countObject(cards);
-
+//console.log('following line: cards');
+//console.log(cards);
     if (userCount === cardCount) {
         return true;
     }
