@@ -66,7 +66,17 @@ io.sockets.on('connection', function(socket) {
         
         // if we got a new userId update the user and kill the old one!
         if (oldUserId !== userId && undefined !== storage.users[oldUserId] && null !== storage.users[oldUserId]) {
+            var desk = storage.desks.length - 1,
+                card = storage.desks[desk].cards[oldUserId],
+                cardValue;
+                
             delete storage.users[oldUserId];
+            if (undefined !== card.value) {
+                cardValue = card.value;
+                delete storage.desks[desk].cards[oldUserId];
+                storage.desks[desk].cards[userId] = {};
+                storage.desks[desk].cards[userId].value = cardValue;
+            }
         }
     
         if (!checkUsername(username)) {
@@ -258,8 +268,7 @@ function checkIfAllCardsSet(deskCount) {
         
     userCount = countObject(users);
     cardCount = countObject(cards);
-//console.log('following line: cards');
-//console.log(cards);
+
     if (userCount === cardCount) {
         return true;
     }
