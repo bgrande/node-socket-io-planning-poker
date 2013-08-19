@@ -7,7 +7,7 @@
  * @author    Diana Hartmann <diana.hartmann@mayflower.de>
  */
 
-var port = 3000,
+var port = process.env.PORT || 3000,
     app = require('express')(),
     server = require('http').createServer(app),
     io = require('socket.io').listen(server),
