@@ -22,6 +22,7 @@ var port = 3000,
         ]
     };
 
+io.set('log level', 1);
 server.listen(port);
 
 console.log('Server running at port ' + port);
