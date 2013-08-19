@@ -22,11 +22,11 @@ var port = process.env.PORT || 3000,
         ]
     };
 
-io.set('log level', 1);
-if ('production' === process.env.NODE_ENV) {
+if ('production' === process.env.NODE_ENV) {   
     io.configure(function () {
         io.set("transports", ["xhr-polling"]);
         io.set("polling duration", 10);
+        io.set('log level', 1);
     });
 }
 

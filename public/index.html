@@ -95,7 +95,8 @@
     <script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript">
-        var socket = io.connect('http://localhost:3000'),
+        var host = window.location.hostname;
+            socket = io.connect(host), // connect to source hostname...
             cookieUsername = getCookie('username'),
             userId = getCookie('userId'),
             username = (undefined !== cookieUsername && null !== cookieUsername) ? cookieUsername : 'name' + Math.round(Math.random() * Math.random() * 100),
