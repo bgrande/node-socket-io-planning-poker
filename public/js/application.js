@@ -1,19 +1,19 @@
-$(function () {    
-    var host = window.location.hostname;
-    socket = io.connect(host), // connect to source hostname...
-        cookieUsername = getCookie('username'),
-        userId = getCookie('userId'),
-        username = (undefined !== cookieUsername && null !== cookieUsername) ? cookieUsername : 'name' + Math.round(Math.random() * Math.random() * 100),
-        usernameSet = $('#username').val();
+$(function () {
+    var host, socket, cookieUsername, userId, username, usernameSet;
     
-    socket.on('connect', function() {
-        var username = usernameSet !== '' ? usernameSet : username,
-            userObject = {};
+    host = window.location.hostname;
+    socket = io.connect(host);
+    cookieUsername = getCookie('username');
+    userId = getCookie('userId');
+    username = (undefined !== cookieUsername && null !== cookieUsername) ? cookieUsername : 'name' + Math.round(Math.random() * Math.random() * 100);
+    usernameSet = $('#username').val();
     
-        userObject = {
-            'userId': userId,
-            'username': username
-        };
+    socket.on('connect', function() {        
+        var username = usernameSet === '' ? username : usernameSet,
+            userObject = {
+                'userId': userId,
+                'username': username
+            };
     
     
         socket.emit('username', userObject);
@@ -56,19 +56,20 @@ $(function () {
             $('.vote-buttons').find('.card').prop('disabled', true);
         }
     
-        for (x in data.cards) {
+        for (var x in data.cards) {
             var user = '#' + x;
+            //noinspection JSUnfilteredForInLoop
             $(user).find('.cardValue').children('span').text(data.cards[x].value);
         }
     });
     
-    $('.change-name').on('click', function(e) {
+$('.change-name').on('click', function () {
         var newName = $('#username').val();
         socket.emit('changeUsername', newName);
         setCookie('username', newName);
     });
     
-    $('.card').on('click', function(e) {
+    $('.card').on('click', function() {
         var openToken = Math.random(),
             that = this;
     
@@ -120,30 +121,31 @@ $(function () {
         }
     };
     
-    var setCardValue = function(data, username) {
+    var setCardValue = function (data, username) {
         var $card = $('#' + username),
             $cardValue = $card.find('.cardValue');
-    
+
         if ($cardValue.text()) {
             $cardValue.html('<span>' + data + '</span>');
         } else {
             $card.find('.card-background').remove();
             $card.find('.thumbnail').append('<h1 class="cardValue caption" style="margin: auto"><span>' + data + '</span></h1>');
         }
-    }
-    
+    };
+        
     function setCookie(name, value, expiration)
     {
         'use strict';
-        var cookieValue = null,
-            expire = new Date();
+        var cookieValue, expire;
+        cookieValue = null;
+        expire = new Date();
     
         if (undefined === expiration) {
             expiration = 1000 * 3600; // 1 hour in milliseconds
         }
     
         expire.setTime(expire.getTime() + expiration);
-        var cookieValue = escape(value) + "; expires=" + expire.toUTCString();
+        cookieValue = encodeURI(value) + "; expires=" + expire.toUTCString();
         document.cookie = name + "=" + cookieValue;
     }
     
@@ -164,7 +166,7 @@ $(function () {
             if (end == -1) {
                 end = cookie.length;
             }
-            value = unescape(cookie.substring(start, end));
+            value = decodeURI(cookie.substring(start, end));
         }
     
         return value;
