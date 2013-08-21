@@ -5,25 +5,24 @@ $(function () {
     socket = io.connect(host);
     cookieUsername = getCookie('username');
     userId = getCookie('userId');
-    username = (undefined !== cookieUsername && null !== cookieUsername) ? cookieUsername : 'name' + Math.round(Math.random() * Math.random() * 100);
-    usernameSet = $('#username').val();
+    username = (isSet(cookieUsername)) ? cookieUsername : 'name' + Math.round(Math.random() * Math.random() * 100);
+    usernameSet = $('#username').val();   
     
-    socket.on('connect', function() {        
-        var username = usernameSet === '' ? username : usernameSet,
-            userObject = {
+    socket.on('connect', function() {
+        username = (isSet(usernameSet)) ? usernameSet : username;
+        var userObject = {
                 'userId': userId,
                 'username': username
             };
-    
-    
+        
         socket.emit('username', userObject);
     });
     
     setCookie('username', username);
     
     socket.on('users', function(data) {
-        if (undefined !== data && null !== data && undefined === data.error) {
-            if (undefined !== data.userId && undefined !== data.users) {
+        if (!isSet(data.error)) {
+            if (isSet(data.userId) && isSet(undefined !== data.users)) {
                 setUserList(data.users);
                 setCookie('userId', data.userId);
             } else {
@@ -170,5 +169,9 @@ $('.change-name').on('click', function () {
         }
     
         return value;
+    }
+    
+    function isSet(variable) {
+        return !(null === variable || undefined === variable || "" === variable);        
     }
 });

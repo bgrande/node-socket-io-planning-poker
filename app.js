@@ -162,7 +162,8 @@ io.sockets.on('connection', function(socket) {
             return;
         } 
         
-        updateUsername(data, userId);        
+        updateUsername(data, userId);       
+        
         socket.emit('users', {
             'userId': userId,
             'users': getUsers(userId)
@@ -198,7 +199,7 @@ function getUsers(userId) {
         },
         i = 0;
     
-    for (var x in storage.users) {
+    for (x in storage.users) {
         if (!userList.users[i]) {
             userList.users[i] = {};
         }
@@ -248,7 +249,7 @@ function updateUsername(data, id) {
 function getCardValuesByUsername(cards) {
     var cardList = {};
     
-    for (var x in cards) {
+    for (x in cards) {
         if (storage.users[x]) {
             var name = storage.users[x].username;
             cardList[name] = cards[x];
