@@ -7,20 +7,22 @@
  * @author    Diana Hartmann <diana.hartmann@mayflower.de>
  */
 
-var port = process.env.PORT || 3000,
-    app = require('express')(),
-    server = require('http').createServer(app),
-    io = require('socket.io').listen(server),
-    storage = {
-        'sessions': {},
-        'admin': null,
-        'isOpen': true,
-        'users': {},
-        'desks': [],
-        'allowedCardValues': [
-            0, '1/2', 1, 2, 3, 5, 8, 13, 20, 40, 100, '?'
-        ]
-    };
+var port, app, server, io, storage;
+
+port = process.env.PORT || 3000;
+app = require('express')();
+server = require('http').createServer(app);
+io = require('socket.io').listen(server);
+storage = {
+    'sessions': {},
+    'admin': null,
+    'isOpen': true,
+    'users': {},
+    'desks': [],
+    'allowedCardValues': [
+        0, '1/2', 1, 2, 3, 5, 8, 13, 20, 40, 100, '?'
+    ]
+};
 
 if ('production' === process.env.NODE_ENV) {   
     io.configure(function () {
@@ -97,7 +99,8 @@ io.sockets.on('connection', function(socket) {
         }
     
         if (!checkUsername(username)) {
-            data = data + '2';
+            //noinspection JSUnusedAssignment
+            data += '2';
         }
         updateUsername(username, userId);
         
@@ -138,6 +141,7 @@ io.sockets.on('connection', function(socket) {
         
         socket.emit('sendCard', data);
 
+        var closedDesk;
         if (checkIfAllCardsSet(deskCount)) {
             var cardValues = getCardValuesByUsername(storage.desks[deskCount - 1].cards);
             storage.isOpen = false;
@@ -193,12 +197,12 @@ function getUsers(userId) {
             'users': []
         },
         i = 0;
-
-    for (x in storage.users) {
+    
+    for (var x in storage.users) {
         if (!userList.users[i]) {
             userList.users[i] = {};
         }
-
+        
         userList.users[i].username = storage.users[x].username;
         userList.users[i].admin = storage.users[x].admin;
         
@@ -244,9 +248,9 @@ function updateUsername(data, id) {
 function getCardValuesByUsername(cards) {
     var cardList = {};
     
-    for (x in cards) {
+    for (var x in cards) {
         if (storage.users[x]) {
-            name = storage.users[x].username;
+            var name = storage.users[x].username;
             cardList[name] = cards[x];
         }
     }
@@ -278,18 +282,16 @@ function checkCardValue(data) {
  * @returns bool
  */
 function checkIfAllCardsSet(deskCount) {
-    var cardCount = 0,
-        userCount = 0,
-        users = storage.users,
-        cards = storage.desks[deskCount - 1].cards;
+    var cardCount, userCount, users, cards;
+    
+    cardCount = userCount = 0;
+    users = storage.users;
+    cards = storage.desks[deskCount - 1].cards;
         
     userCount = countObject(users);
     cardCount = countObject(cards);
 
-    if (userCount === cardCount) {
-        return true;
-    }
-    return false;
+    return userCount === cardCount;   
 }
 
 /**
