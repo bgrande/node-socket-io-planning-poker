@@ -88,7 +88,8 @@ io.sockets.on('connection', function(socket) {
             var desk = storage.desks.length - 1,
                 card = storage.desks[desk].cards[oldUserId],
                 cardValue;
-                
+// @TODO also update user cardValue!
+            
             delete storage.users[oldUserId];
             if (undefined !== card && undefined !== card.value) {
                 cardValue = card.value;
