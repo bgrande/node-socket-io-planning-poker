@@ -39,9 +39,18 @@ app.get('/', function(req, res) {
     res.sendfile(__dirname + '/public/index.html');
 });
 
+app.get('/:subdir/:subsubdir/:name', function(req, res) {
+    var name = req.params.name;
+    var subdir = req.params.subdir;
+    var subsubdir = req.params.subsubdir;
+
+    res.sendfile(__dirname + '/public/' + subdir + '/' + subsubdir + '/' + name);
+});
+
 app.get('/:subdir/:name', function(req, res) {
     var name = req.params.name;
     var subdir = req.params.subdir;
+
     res.sendfile(__dirname + '/public/' + subdir + '/' + name);
 });
 
