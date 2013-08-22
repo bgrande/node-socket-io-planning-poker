@@ -24,6 +24,7 @@ storage = {
     ]
 };
 
+// switch to xhr polling for heroku and disable debug output
 if ('production' === process.env.NODE_ENV) {   
     io.configure(function () {
         io.set("transports", ["xhr-polling"]);
@@ -65,16 +66,14 @@ io.sockets.on('connection', function(socket) {
     if (0 == storage.desks.length) {
         storage.admin = userId;
         storage.desks[0] = {};
-        storage.desks[0].cards = [];
-        if (!storage.desks[0].cards[userId]) {
-            storage.desks[0].cards[userId] = {};
-        }
+        storage.desks[0].cards = [];        
     }
 
     // send initial userlist
     socket.on('username', function(data) {
         var username = data,
-            oldUserId = null; 
+            oldUserId = null,
+            cardValue = null; 
         
         if ('object' == typeof data) {
             if (null !== data.userId) {
@@ -84,13 +83,16 @@ io.sockets.on('connection', function(socket) {
         } 
         
         // if we got a new userId update the user and kill the old one!
-        if (oldUserId !== userId && undefined !== storage.users[oldUserId] && null !== storage.users[oldUserId]) {
+        if (oldUserId !== userId && isSet(storage.users[oldUserId])) {
             var desk = storage.desks.length - 1,
-                card = storage.desks[desk].cards[oldUserId],
-                cardValue;
-// @TODO also update user cardValue!
+                card = storage.desks[desk].cards[oldUserId];
             
             delete storage.users[oldUserId];
+            
+            if (storage.admin === oldUserId) {
+                storage.admin = userId;
+            }
+            
             if (undefined !== card && undefined !== card.value) {
                 cardValue = card.value;
                 delete storage.desks[desk].cards[oldUserId];
@@ -105,6 +107,10 @@ io.sockets.on('connection', function(socket) {
         }
         updateUsername(username, userId);
         
+        if (null !== cardValue) {
+            storage.users[userId].cardValue = cardValue;
+        }
+        
         socket.emit('users', {
             'userId': userId,
             'users': getUsers(userId)
@@ -114,7 +120,7 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('isOpen', function(data) {
         var response = false;
-        if (undefined !== data && null !== data && true === storage.isOpen) {
+        if (isSet(data) && true === storage.isOpen) {
             response = data;
         }
         socket.emit('isOpenSuccess', response);
@@ -156,6 +162,13 @@ io.sockets.on('connection', function(socket) {
     });
 
     socket.on('changeUsername', function(data) {
+        if (!isSet(data)) {
+            socket.emit('users', {
+                'error': 'username not allowed!'
+            });
+            return;
+        }
+        
         if (!checkUsername(data)) {
             socket.emit('users', {
                 'error': 'username already in use!'
@@ -173,6 +186,7 @@ io.sockets.on('connection', function(socket) {
     });
 
     socket.on('disconnect', function (data) {
+console.log('disconnect:', data);        
         // @todo remove specific user from storage!
     });
 
@@ -208,7 +222,7 @@ function getUsers(userId) {
         userList.users[i].username = storage.users[x].username;
         userList.users[i].admin = storage.users[x].admin;
         
-        if (undefined !== storage.users[x].cardValue && null !== storage.users[x].cardValue) {
+        if (isSet(storage.users[x].cardValue)) {
             userList.users[i].cardValue = '...';
         }
 
@@ -289,7 +303,7 @@ function checkIfAllCardsSet(deskCount) {
     cardCount = userCount = 0;
     users = storage.users;
     cards = storage.desks[deskCount - 1].cards;
-        
+    
     userCount = countObject(users);
     cardCount = countObject(cards);
 
@@ -325,4 +339,15 @@ function checkUsername(data) {
         }
     }
     return true;
+}
+
+/**
+ * @TODO move into helper used by server and frontend app parts
+ * 
+ * @param variable
+ * 
+ * @returns boolean
+ */
+function isSet(variable) {
+    return !(null === variable || undefined === variable || "" === variable);
 }
