@@ -20,6 +20,8 @@ $(function () {
     
     setCookie('username', username);
     
+    $('#username').val(username);
+    
     socket.on('users', function(data) {
         if (!isSet(data.error)) {
             if (isSet(data.userId) && isSet(undefined !== data.users)) {
