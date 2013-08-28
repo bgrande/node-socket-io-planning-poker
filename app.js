@@ -9,10 +9,10 @@
 
 var port, app, server, io, storage, helpers;
 
-port = process.env.PORT || 3000;
-app = require('express')();
+port   = process.env.PORT || 3000;
+app    = require('express')();
 server = require('http').createServer(app);
-io = require('socket.io').listen(server);
+io     = require('socket.io').listen(server);
 
 /* @todo move objects into own module */
 helpers = {
