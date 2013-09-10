@@ -13,8 +13,8 @@ port    = process.env.PORT || 3000;
 app     = require('express')();
 server  = require('http').createServer(app);
 io      = require('socket.io').listen(server);
-helpers = require('./helpers');
-storage = require('./storage');
+helpers = require('./helpers').helpers;
+storage = require('./storage').storage;
 
 // switch to xhr polling for heroku and disable debug output
 if ('production' === process.env.NODE_ENV) {
@@ -53,7 +53,7 @@ app.get('/:subdir/:name', function(req, res) {
 // initialize connection for socketio
 io.sockets.on('connection', function(socket) {
     var userId = socket.id;
-    
+
     // set first user as desk admin
     if (0 == storage.desks.length) {
         storage.admin = userId;

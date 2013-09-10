@@ -1,3 +1,5 @@
+var helpers = require('./helpers').helpers;
+
 exports.storage = {
     'admin': null,
     'isOpen': true,
