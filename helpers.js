@@ -8,8 +8,12 @@ module.exports = {
      */
     'countObject': function(object) {
         var count = 0;
+        
         for (x in object) {
-            count++;
+            if (object.hasOwnProperty(x)) {
+                count++;
+            }
+            
         }
         return count;
     },

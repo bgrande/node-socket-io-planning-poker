@@ -23,7 +23,7 @@ module.exports = {
             i = 0;
 
         for (x in this.users) {
-            if (!helpers.isSet(userList.users[i])) {
+            if (this.users.hasOwnProperty(x) && !helpers.isSet(userList.users[i])) {
                 userList.users[i] = {};
             }
 
@@ -69,7 +69,7 @@ module.exports = {
         var cardList = {};
 
         for (x in cards) {
-            if (this.users[x]) {
+            if (this.users.hasOwnProperty(x)) {
                 var name = this.users[x].username;
                 cardList[name] = cards[x];
             }
@@ -120,7 +120,7 @@ module.exports = {
      */
     'checkUsername': function (data) {
         for (x in this.users) {
-            if (data == this.users[x].username) {
+            if (!this.users.hasOwnProperty(x) || data == this.users[x].username) {
                 return false;
             }
         }
