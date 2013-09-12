@@ -1,4 +1,4 @@
-exports.helpers = {
+module.exports = {
     /**
      * helper function to count object lists
      *

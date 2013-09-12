@@ -1,6 +1,6 @@
-var helpers = require('./helpers').helpers;
+var helpers = require('./helpers');
 
-exports.storage = {
+module.exports = {
     'admin': null,
     'isOpen': true,
     'users': {},

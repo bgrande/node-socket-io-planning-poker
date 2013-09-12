@@ -13,8 +13,8 @@ port    = process.env.PORT || 3000;
 app     = require('express')();
 server  = require('http').createServer(app);
 io      = require('socket.io').listen(server);
-helpers = require('./helpers').helpers;
-storage = require('./storage').storage;
+helpers = require('./helpers');
+storage = require('./storage');
 
 // switch to xhr polling for heroku and disable debug output
 if ('production' === process.env.NODE_ENV) {
