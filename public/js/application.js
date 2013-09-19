@@ -27,6 +27,11 @@ $(function () {
             if (isSet(data.userId) && isSet(undefined !== data.users)) {
                 setUserList(data.users);
                 setCookie('userId', data.userId);
+                if (true === data.admin) {
+                    $('.admin-toolbar').show();
+                } else {
+                    $('.admin-toolbar').hide();
+                }
             } else {
                 setUserList(data);
             }

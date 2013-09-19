@@ -55,9 +55,13 @@ io.sockets.on('connection', function(socket) {
     'use strict';
     var userId = socket.id;
 
+    if (null === storage.getAdmin()) {
+        storage.setAdmin(userId);
+        console.log('initial admin: ' + userId);
+    }
+
     // set first user as desk admin
     if (0 == storage.desks.length) {
-        storage.admin = userId;
         storage.desks[0] = {};
         storage.desks[0].cards = [];        
     }
@@ -74,7 +78,7 @@ io.sockets.on('connection', function(socket) {
             }
             username = data.username;
         } 
-        
+
         // if we got a new userId update the user and kill the old one!
         if (oldUserId !== userId && helpers.isSet(storage.users[oldUserId])) {
             var desk = storage.desks.length - 1,
@@ -82,8 +86,10 @@ io.sockets.on('connection', function(socket) {
             
             delete storage.users[oldUserId];
             
-            if (storage.admin === oldUserId) {
-                storage.admin = userId;
+            if (storage.getAdmin() === oldUserId) {
+                console.log('old admin: ' + oldUserId);
+                storage.setAdmin(userId);
+                console.log('admin: ' + userId);
             }
             
             if (undefined !== card && undefined !== card.value) {
@@ -105,10 +111,12 @@ io.sockets.on('connection', function(socket) {
         }
 
         var userList = storage.getUsers(userId);
-        
+
+        console.log('admin: ' + storage.isAdmin(userId));
         socket.emit('users', {
             'userId': userId,
-            'users': userList
+            'users': userList,
+            'admin': storage.isAdmin(userId)
         });
         socket.broadcast.emit('users', userList)
     });
