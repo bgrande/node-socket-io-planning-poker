@@ -133,5 +133,13 @@ module.exports = {
     },
     'getAdmin': function() {
         return this.admin;
+    },
+    'isAdmin': function(id) {
+        var adminId = this.getAdmin();
+
+        if (id === adminId) {
+            return true;
+        }
+        return false;
     }
 };

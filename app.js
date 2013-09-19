@@ -52,6 +52,7 @@ app.get('/:subdir/:name', function(req, res) {
 // @todo socket handling will be exported into own module
 // initialize connection for socketio
 io.sockets.on('connection', function(socket) {
+    'use strict';
     var userId = socket.id;
 
     // set first user as desk admin
