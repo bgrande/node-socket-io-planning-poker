@@ -191,6 +191,7 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('addTicket', function (data) {
         storage.addTicket(data);
+        socket.emit('changedTickets', storage.getTickets());
         socket.broadcast.emit('changedTickets', storage.getTickets());
     });
 

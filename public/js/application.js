@@ -70,8 +70,9 @@ $(function () {
     });
 
     socket.on('changedTickets', function(data) {
-        for (var x in data) {
-            $('#ticketList').children('span').text(x.name);
+        $('#ticketList').html('');
+        for (var i in data) {
+            $('#ticketList').append('<li>' + data[i].name + '</li>');
         }
     });
 
