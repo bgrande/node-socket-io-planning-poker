@@ -181,6 +181,11 @@ io.sockets.on('connection', function(socket) {
         socket.broadcast.emit('users', userList);
     });
 
+    socket.on('addTicket', function (data) {
+        storage.addTicket(data);
+        socket.broadcast.emit('changedTickets', storage.getTickets());
+    });
+
     socket.on('disconnect', function (data) {
 console.log('disconnect:', data);        
         // @todo remove specific user from storage!

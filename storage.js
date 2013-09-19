@@ -9,6 +9,7 @@ module.exports = {
         0, '1/2', 1, 2, 3, 5, 8, 13, 20, 40, 100, '?'
     ],
     'helper': null,
+    'tickets': [],
     /**
      * function to map list of userId identified uers to array
      *
@@ -141,5 +142,11 @@ module.exports = {
             return true;
         }
         return false;
+    },
+    'addTicket': function (ticket) {
+        this.tickets.push(ticket);
+    },
+    'getTickets': function () {
+        return this.tickets;
     }
 };
