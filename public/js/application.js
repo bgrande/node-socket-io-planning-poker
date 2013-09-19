@@ -63,8 +63,19 @@ $(function () {
             $(user).find('.cardValue').children('span').text(data.cards[x].value);
         }
     });
+
+    socket.on('changedTickets', function(data) {
+        for (var x in data) {
+            $('#ticketList').children('span').text(x.name);
+        }
+    });
+
+    $('.add-ticket').on('click', function () {
+        var ticket = $('#ticket').val();
+        socket.emit('addTicket', {'name': ticket})
+    });
     
-$('.change-name').on('click', function () {
+    $('.change-name').on('click', function () {
         var newName = $('#username').val();
         socket.emit('changeUsername', newName);
         setCookie('username', newName);
