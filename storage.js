@@ -1,3 +1,5 @@
+'use strict';
+
 var helpers = require('./helpers');
 
 module.exports = {
@@ -21,6 +23,7 @@ module.exports = {
         var userList = {
                 'users': []
             },
+            x,
             i = 0;
 
         for (x in this.users) {
@@ -67,7 +70,8 @@ module.exports = {
      * @returns object
      */
     'getCardValuesByUsername': function (cards) {
-        var cardList = {};
+        var cardList = {},
+            x;
 
         for (x in cards) {
             if (this.users.hasOwnProperty(x)) {
@@ -120,6 +124,8 @@ module.exports = {
      * @returns bool
      */
     'checkUsername': function (data) {
+        var x;
+
         for (x in this.users) {
             if (!this.users.hasOwnProperty(x) || data == this.users[x].username) {
                 return false;
@@ -148,5 +154,10 @@ module.exports = {
     },
     'getTickets': function () {
         return this.tickets;
+    },
+    'removeUser': function (id) {
+        if (this.users.hasOwnProperty(id)) {
+            delete this.users[id];
+        }
     }
 };

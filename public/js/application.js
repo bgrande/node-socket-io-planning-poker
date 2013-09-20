@@ -115,7 +115,7 @@ $(function () {
                 style = '';
     
             if (undefined === cardValue || null === cardValue || '' == cardValue) {
-                card = '<img class="card-background" src=\"img/back.png\" alt=\"Card Background\" />';
+                card = '<div class="card-background"></div>';
             } else {
                 card = '<h1 class="cardValue caption" style="margin: auto"><span>' + cardValue + '</span></h1>';
             }

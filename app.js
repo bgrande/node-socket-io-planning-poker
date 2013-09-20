@@ -196,8 +196,8 @@ io.sockets.on('connection', function(socket) {
     });
 
     socket.on('disconnect', function (data) {
-console.log('disconnect:', data);        
-        // @todo remove specific user from storage!
+        // storage.removeUser(userId);
+        // @todo remove specific user from storage only if session timed out!
     });
 
     // disconnect and remove user

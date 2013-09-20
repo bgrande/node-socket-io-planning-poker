@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
     /**
      * helper function to count object lists
@@ -7,7 +9,8 @@ module.exports = {
      * @returns int
      */
     'countObject': function(object) {
-        var count = 0;
+        var count = 0,
+            x;
         
         for (x in object) {
             if (object.hasOwnProperty(x)) {
