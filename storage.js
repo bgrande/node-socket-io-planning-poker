@@ -17,7 +17,7 @@ module.exports = {
      *
      * @param userId string
      *
-     * @returns array
+     * @returns {users: Array}
      */
     'getUsers': function (userId) {
         var userList = {
@@ -142,12 +142,7 @@ module.exports = {
         return this.admin;
     },
     'isAdmin': function(id) {
-        var adminId = this.getAdmin();
-
-        if (id === adminId) {
-            return true;
-        }
-        return false;
+        return id === this.getAdmin();
     },
     'addTicket': function (ticket) {
         this.tickets.push(ticket);
