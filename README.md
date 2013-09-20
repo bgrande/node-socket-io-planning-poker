@@ -16,3 +16,4 @@
 * enable multiple sessions
 * mark highest and lowest vote
 * separate jquery usage from socket.io usage
+* use angular.js
