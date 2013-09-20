@@ -57,7 +57,6 @@ io.sockets.on('connection', function(socket) {
 
     if (null === storage.getAdmin()) {
         storage.setAdmin(userId);
-        console.log('initial admin: ' + userId);
     }
 
     // set first user as desk admin
@@ -87,9 +86,7 @@ io.sockets.on('connection', function(socket) {
             delete storage.users[oldUserId];
             
             if (storage.getAdmin() === oldUserId) {
-                console.log('old admin: ' + oldUserId);
                 storage.setAdmin(userId);
-                console.log('admin: ' + userId);
             }
             
             if (undefined !== card && undefined !== card.value) {
@@ -112,7 +109,6 @@ io.sockets.on('connection', function(socket) {
 
         var userList = storage.getUsers(userId);
 
-        console.log('admin: ' + storage.isAdmin(userId));
         socket.emit('users', {
             'userId': userId,
             'users': userList,
@@ -189,10 +185,35 @@ io.sockets.on('connection', function(socket) {
         socket.broadcast.emit('users', userList);
     });
 
-    socket.on('addTicket', function (data) {
+    socket.on('addTicket', function(data) {
         storage.addTicket(data);
         socket.emit('changedTickets', storage.getTickets());
         socket.broadcast.emit('changedTickets', storage.getTickets());
+    });
+
+    socket.on('resetTable', function(data) {
+        var userList;
+console.log(data, userId);
+        if (helpers.isSet(data) && data === storage.getAdmin() && data === userId) {
+            storage.resetTable(storage.getCurrentTableIndex());
+
+            userList = storage.getUsers(userId);
+
+            socket.emit('users', {
+                'userId': userId,
+                'users': userList
+            });
+
+            socket.broadcast.emit('users', userList);
+
+            socket.emit('resetTableSuccess', {
+                'success': true
+            });
+        } else {
+            socket.emit('resetTableSuccess', {
+                'error': 'you are not allowed to reset the list!'
+            });
+        }
     });
 
     socket.on('disconnect', function (data) {

@@ -99,7 +99,17 @@ $(function () {
             }
         });
     });
-    
+
+    $('.admin-reset').on('click', function() {
+        socket.emit('resetTable', userId);
+        socket.on('resetTableSuccess', function(data) {
+            if (undefined !== data.success && true === data.success) {
+                $('.vote-buttons').find('.card').prop('disabled', false);
+            } else {
+                alert('it did not work: ' + data.error);
+            }
+        });
+    });
     
     var setUserList = function(data) {
         var $userlist = $('#userlist'),
@@ -150,7 +160,7 @@ $(function () {
             $card.find('.thumbnail').append('<h1 class="cardValue caption" style="margin: auto"><span>' + data + '</span></h1>');
         }
     };
-        
+
     function setCookie(name, value, expiration)
     {
         'use strict';

@@ -11,6 +11,7 @@
 # TODO
 * tests
 * modularize and refactor using objects
+* allow visitors or enable roles (like Scrum Master, ...)
 * administration (close round, (re)start round, set (ticket) topic, kick (inactive) users)
 * set ticket topic for current desk
 * enable multiple sessions

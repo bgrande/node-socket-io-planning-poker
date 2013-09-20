@@ -144,15 +144,33 @@ module.exports = {
     'isAdmin': function(id) {
         return id === this.getAdmin();
     },
-    'addTicket': function (ticket) {
+    'addTicket': function(ticket) {
         this.tickets.push(ticket);
     },
-    'getTickets': function () {
+    'getTickets': function() {
         return this.tickets;
     },
-    'removeUser': function (id) {
+    'removeUser': function(id) {
         if (this.users.hasOwnProperty(id)) {
             delete this.users[id];
         }
+    },
+    'resetTable': function(index) {
+        var x;
+
+        if (0 < this.desks.length) {
+            this.desks[index].cards = [];
+        }
+
+        this.isOpen = true;
+
+        for (x in this.users) {
+            if (users.hasOwnProperty(x) && helpers.isSet(this.users[x].cardValue)) {
+                this.users[x].cardValue = null;
+            }
+        }
+    },
+    'getCurrentTableIndex': function() {
+        return this.desks.length - 1;
     }
 };
