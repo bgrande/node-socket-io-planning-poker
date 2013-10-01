@@ -165,7 +165,7 @@ module.exports = {
         this.isOpen = true;
 
         for (x in this.users) {
-            if (users.hasOwnProperty(x) && helpers.isSet(this.users[x].cardValue)) {
+            if (this.users.hasOwnProperty(x) && helpers.isSet(this.users[x].cardValue)) {
                 this.users[x].cardValue = null;
             }
         }

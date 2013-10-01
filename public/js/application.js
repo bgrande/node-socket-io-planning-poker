@@ -14,18 +14,20 @@ $(function () {
                 'userId': userId,
                 'username': username
             };
-        
+
         socket.emit('username', userObject);
     });
-    
+
+    // set initial username cookie
     setCookie('username', username);
     
     $('#username').val(username);
     
     socket.on('users', function(data) {
         if (!isSet(data.error)) {
-            if (isSet(data.userId) && isSet(undefined !== data.users)) {
+            if (isSet(data.userId) && isSet(data.users)) {
                 setUserList(data.users);
+                // set initial userId cookie
                 setCookie('userId', data.userId);
                 if (true === data.admin) {
                     $('.admin-toolbar').show();
@@ -84,6 +86,7 @@ $(function () {
     $('.change-name').on('click', function () {
         var newName = $('#username').val();
         socket.emit('changeUsername', newName);
+        // set new username
         setCookie('username', newName);
     });
     
@@ -101,7 +104,7 @@ $(function () {
     });
 
     $('.admin-reset').on('click', function() {
-        socket.emit('resetTable', userId);
+        socket.emit('resetTable', getCookie('userId'));
         socket.on('resetTableSuccess', function(data) {
             if (undefined !== data.success && true === data.success) {
                 $('.vote-buttons').find('.card').prop('disabled', false);
@@ -123,7 +126,8 @@ $(function () {
                 cardValue = data.users[i].cardValue,
                 card,
                 style = '';
-    
+
+            /* @todo bad style -> separate html from js */
             if (undefined === cardValue || null === cardValue || '' == cardValue) {
                 card = '<div class="card-background"></div>';
             } else {
@@ -161,6 +165,16 @@ $(function () {
         }
     };
 
+
+
+    // @todo should be part of own helper file
+    /**
+     * Set a cookie
+     *
+     * @param name
+     * @param value
+     * @param expiration
+     */
     function setCookie(name, value, expiration)
     {
         'use strict';
@@ -169,14 +183,20 @@ $(function () {
         expire = new Date();
     
         if (undefined === expiration) {
-            expiration = 1000 * 3600; // 1 hour in milliseconds
+            expiration = 1000 * 1800; // 1/2 hour in milliseconds
         }
     
         expire.setTime(expire.getTime() + expiration);
         cookieValue = encodeURI(value) + "; expires=" + expire.toUTCString();
         document.cookie = name + "=" + cookieValue;
     }
-    
+
+    /**
+     * read a cookie by name
+     *
+     * @param name
+     * @returns {string}
+     */
     function getCookie(name)
     {
         'use strict';
@@ -199,7 +219,13 @@ $(function () {
     
         return value;
     }
-    
+
+    /**
+     * checks if variable is set
+     *
+     * @param variable
+     * @returns {boolean}
+     */
     function isSet(variable) {
         return !(null === variable || undefined === variable || "" === variable);        
     }
