@@ -1,7 +1,8 @@
 # About
 * single session scrum poker tool
 * first user to connect becomes admin
-* if all users voted the desk is closed and all votes are shown
+* right now the admin is able to reset the table (while open and closed)
+* if all users voted the table is closed and all votes are shown
 
 # Run
 * npm install
@@ -12,9 +13,10 @@
 * tests
 * modularize and refactor using objects
 * allow visitors or enable roles (like Scrum Master, ...)
-* administration (close round, (re)start round, set (ticket) topic, kick (inactive) users)
-* set ticket topic for current desk
+* administration (close round, set (ticket) topic, kick (inactive) users)
+* set ticket topic for current table
 * enable multiple sessions
 * mark highest and lowest vote
 * separate jquery usage from socket.io usage
+* refactor code duplicates
 * test angular.js
