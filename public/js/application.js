@@ -60,7 +60,7 @@ $(function () {
     });
     
     socket.on('closeDesk', function(data) {
-        if (data.desk) {
+        if (data.table) {
             $('.vote-buttons').find('.card').prop('disabled', true);
         }
     

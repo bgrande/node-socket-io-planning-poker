@@ -59,10 +59,10 @@ io.sockets.on('connection', function(socket) {
         storage.setAdmin(userId);
     }
 
-    // set first user as desk admin
-    if (0 == storage.desks.length) {
-        storage.desks[0] = {};
-        storage.desks[0].cards = [];        
+    // set first user as table admin
+    if (0 == storage.tables.length) {
+        storage.tables[0] = {};
+        storage.tables[0].cards = [];
     }
 
     // send initial userlist
@@ -80,8 +80,8 @@ io.sockets.on('connection', function(socket) {
 
         // if we got a new userId update the user and kill the old one!
         if (oldUserId !== userId && helpers.isSet(storage.users[oldUserId])) {
-            var desk = storage.desks.length - 1,
-                card = storage.desks[desk].cards[oldUserId];
+            var table = storage.tables.length - 1,
+                card = storage.tables[table].cards[oldUserId];
             
             delete storage.users[oldUserId];
             
@@ -91,9 +91,9 @@ io.sockets.on('connection', function(socket) {
             
             if (undefined !== card && undefined !== card.value) {
                 cardValue = card.value;
-                delete storage.desks[desk].cards[oldUserId];
-                storage.desks[desk].cards[userId] = {};
-                storage.desks[desk].cards[userId].value = cardValue;
+                delete storage.tables[table].cards[oldUserId];
+                storage.tables[table].cards[userId] = {};
+                storage.tables[table].cards[userId].value = cardValue;
             }
         }
     
@@ -126,18 +126,18 @@ io.sockets.on('connection', function(socket) {
     });
 
     socket.on('setCard', function(data) {
-        var deskCount = storage.desks.length;        
+        var tableCount = storage.tables.length;
         
         if (!storage.checkCardValue(data)) {
             socket.emit('sendCard', false);
             return;
         }
         
-        if (!storage.desks[deskCount - 1].cards[userId]) {
-            storage.desks[deskCount -1].cards[userId] = {};
+        if (!storage.tables[tableCount - 1].cards[userId]) {
+            storage.tables[tableCount -1].cards[userId] = {};
         }
         
-        storage.desks[deskCount -1].cards[userId].value = data;
+        storage.tables[tableCount -1].cards[userId].value = data;
         storage.users[userId].cardValue = data;
         
         socket.broadcast.emit('sendCard', {
@@ -148,11 +148,11 @@ io.sockets.on('connection', function(socket) {
         socket.emit('sendCard', data);
 
         var closedDesk;
-        if (storage.checkIfAllCardsSet(deskCount)) {
-            var cardValues = storage.getCardValuesByUsername(storage.desks[deskCount - 1].cards);
+        if (storage.checkIfAllCardsSet(tableCount)) {
+            var cardValues = storage.getCardValuesByUsername(storage.tables[tableCount - 1].cards);
             storage.isOpen = false;
             closedDesk = {
-                'desk': deskCount,
+                'table': tableCount,
                 'cards': cardValues
             };
             socket.emit('closeDesk', closedDesk);

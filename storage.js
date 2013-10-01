@@ -6,7 +6,7 @@ module.exports = {
     'admin': null,
     'isOpen': true,
     'users': {},
-    'desks': [],
+    'tables': [],
     'allowedCardValues': [
         0, '1/2', 1, 2, 3, 5, 8, 13, 20, 40, 100, '?'
     ],
@@ -100,16 +100,16 @@ module.exports = {
     /**
      * helper function to check if all cards are already set
      *
-     * @param deskCount int
+     * @param tableCount int
      *
      * @returns bool
      */
-    'checkIfAllCardsSet': function (deskCount) {
+    'checkIfAllCardsSet': function (tableCount) {
         var cardCount, userCount, users, cards;
 
         cardCount = userCount = 0;
         users = this.users;
-        cards = this.desks[deskCount - 1].cards;
+        cards = this.tables[tableCount - 1].cards;
 
         userCount = helpers.countObject(users);
         cardCount = helpers.countObject(cards);
@@ -158,8 +158,8 @@ module.exports = {
     'resetTable': function(index) {
         var x;
 
-        if (0 < this.desks.length) {
-            this.desks[index].cards = [];
+        if (0 < this.tables.length) {
+            this.tables[index].cards = [];
         }
 
         this.isOpen = true;
@@ -171,6 +171,6 @@ module.exports = {
         }
     },
     'getCurrentTableIndex': function() {
-        return this.desks.length - 1;
+        return this.tables.length - 1;
     }
 };
