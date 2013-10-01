@@ -14,6 +14,8 @@
 * modularize and refactor using objects
 * allow visitors or enable roles (like Scrum Master, ...)
 * administration (close round, set (ticket) topic, kick (inactive) users)
+* enable multiple tables
+* enable multiple voting rounds per table
 * set ticket topic for current table
 * enable multiple sessions
 * mark highest and lowest vote
