@@ -180,7 +180,8 @@ io.sockets.on('connection', function(socket) {
         
         socket.emit('users', {
             'userId': userId,
-            'users': userList
+            'users': userList,
+            'admin': storage.isAdmin(userId)
         });
         socket.broadcast.emit('users', userList);
     });
@@ -193,7 +194,6 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('resetTable', function(data) {
         var userList;
-console.log(data, userId);
         if (helpers.isSet(data) && data === storage.getAdmin() && data === userId) {
             storage.resetTable(storage.getCurrentTableIndex());
 
@@ -201,7 +201,8 @@ console.log(data, userId);
 
             socket.emit('users', {
                 'userId': userId,
-                'users': userList
+                'users': userList,
+                'admin': storage.isAdmin(userId)
             });
 
             socket.broadcast.emit('users', userList);
