@@ -1,4 +1,5 @@
 $(function () {
+    'use strict';
     var host, socket, cookieUsername, userId, username, usernameSet;
     
     host = window.location.hostname;
@@ -7,7 +8,7 @@ $(function () {
     userId = getCookie('userId');
     username = (isSet(cookieUsername)) ? cookieUsername : 'name' + Math.round(Math.random() * Math.random() * 100);
     usernameSet = $('#username').val();   
-    
+
     socket.on('connect', function() {
         username = (isSet(usernameSet)) ? usernameSet : username;
         var userObject = {
@@ -177,7 +178,6 @@ $(function () {
      */
     function setCookie(name, value, expiration)
     {
-        'use strict';
         var cookieValue, expire;
         cookieValue = null;
         expire = new Date();
@@ -199,7 +199,6 @@ $(function () {
      */
     function getCookie(name)
     {
-        'use strict';
         var cookie = document.cookie,
             value = null,
             start = cookie.indexOf(" " + name + "=");
