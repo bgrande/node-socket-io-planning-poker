@@ -15,7 +15,7 @@
 * Diana Hartmann
 * Michael Kleinschnitz
 
-# Bug
+# Bugs
 * Fix Table closing
 
 # TODO
@@ -25,6 +25,7 @@
 3) allow visitors or enable roles (like Scrum Master, ...)
 4) tests
 5) error handling right
+6) Use camera for card recognizing! (qr-code?)
 
 Later:
 * enable multiple sessions
