@@ -15,6 +15,9 @@
 * Diana Hartmann
 * Michael Kleinschnitz
 
+# Bug
+* Fix Table closing
+
 # TODO
 0) separate jquery and logic usage from socket.io usage
 1) modularize and refactor (code duplicates) using objects
