@@ -8,15 +8,14 @@ module.exports = {
      *
      * @returns int
      */
-    'countObject': function(object) {
+    countObject: function(object) {
         var count = 0,
             x;
-        
+
         for (x in object) {
             if (object.hasOwnProperty(x)) {
                 count++;
             }
-            
         }
         return count;
     },
@@ -28,7 +27,7 @@ module.exports = {
      *
      * @returns boolean
      */
-    'isSet': function(variable) {
+    isSet: function(variable) {
         return !(null === variable || undefined === variable || "" === variable);
     }
 };
