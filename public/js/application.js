@@ -156,12 +156,10 @@ $(function () {
 
     function getUserObject(usernameSet, username) {
         username = (isSet(usernameSet)) ? usernameSet : username;
-        var userObject = {
+        return {
             'userId': userId,
             'username': username
         };
-
-        return userObject;
     }
 
     function setInitialUsername(username) {
@@ -183,7 +181,7 @@ $(function () {
         }
     }
 
-    function setUserData(data, userList) {
+    function setUserData(data) {
         var userList = data;
 
         if (isSet(data.userId) && isSet(data.users)) {
