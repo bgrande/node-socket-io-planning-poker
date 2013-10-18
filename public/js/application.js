@@ -1,75 +1,37 @@
 $(function () {
     'use strict';
-    var host, socket, cookieUsername, userId, username, usernameSet;
-    
+    var $username, host, socket, cookieUsername, userId, username, usernameSet;
+
+    $username = $('#username');
     host = window.location.hostname;
     socket = io.connect(host);
     cookieUsername = getCookie('username');
     userId = getCookie('userId');
     username = (isSet(cookieUsername)) ? cookieUsername : 'name' + Math.round(Math.random() * Math.random() * 100);
-    usernameSet = $('#username').val();   
+    usernameSet = $username.val();
 
     socket.on('connect', function() {
-        username = (isSet(usernameSet)) ? usernameSet : username;
-        var userObject = {
-                'userId': userId,
-                'username': username
-            };
-
+        var userObject = getUserObject(usernameSet, username);
         socket.emit('username', userObject);
     });
 
-    // set initial username cookie
-    setCookie('username', username);
-    
-    $('#username').val(username);
-    
+    setInitialUsername(username);
+
     socket.on('users', function(data) {
         if (!isSet(data.error)) {
-            if (isSet(data.userId) && isSet(data.users)) {
-                setUserList(data.users);
-                // set initial userId cookie
-                setCookie('userId', data.userId);
-                if (true === data.admin) {
-                    $('.admin-toolbar').show();
-                } else {
-                    $('.admin-toolbar').hide();
-                }
-            } else {
-                setUserList(data);
-            }
+            setUserData(data);
         } else {
             // @todo make error handling right
             alert('it did not work: ' + data.error);
         }
     });
-    
+
     socket.on('sendCard', function(data) {
-        var username = getCookie('username'),
-            cardValue = data;
-    
-        if ('object' == typeof data) {
-            username = data.username;
-            cardValue = data.cardValue;
-        }
-    
-        if (false === cardValue) {
-            cardValue = 'nice try!';
-        }
-    
-        setCardValue(cardValue, username)
+        manageCards(data);
     });
-    
+
     socket.on('closeDesk', function(data) {
-        if (data.table) {
-            $('.vote-buttons').find('.card').prop('disabled', true);
-        }
-    
-        for (var x in data.cards) {
-            var user = '#' + x;
-            //noinspection JSUnfilteredForInLoop
-            $(user).find('.cardValue').children('span').text(data.cards[x].value);
-        }
+        closeDesk(data);
     });
 
     socket.on('changedTickets', function(data) {
@@ -89,6 +51,12 @@ $(function () {
         socket.emit('changeUsername', newName);
         // set new username
         setCookie('username', newName);
+    });
+
+    $username.on('keyup', function(e) {
+        if (e.keyCode == 13) {
+            $('.change-name').trigger('click');
+        }
     });
     
     $('.card').on('click', function() {
@@ -166,66 +134,134 @@ $(function () {
         }
     };
 
+    function manageCards(data) {
+        var username = getCookie('username'),
+            cardValue = data;
 
-
-    // @todo should be part of own helper file
-    /**
-     * Set a cookie
-     *
-     * @param name
-     * @param value
-     * @param expiration
-     */
-    function setCookie(name, value, expiration)
-    {
-        var cookieValue, expire;
-        cookieValue = null;
-        expire = new Date();
-    
-        if (undefined === expiration) {
-            expiration = 1000 * 1800; // 1/2 hour in milliseconds
+        if ('object' == typeof data) {
+            username = data.username;
+            cardValue = data.cardValue;
         }
-    
-        expire.setTime(expire.getTime() + expiration);
-        cookieValue = encodeURI(value) + "; expires=" + expire.toUTCString();
-        document.cookie = name + "=" + cookieValue;
+
+        if (false === cardValue) {
+            cardValue = 'nice try!';
+        }
+
+        setCardValue(cardValue, username)
     }
 
-    /**
-     * read a cookie by name
-     *
-     * @param name
-     * @returns {string}
-     */
-    function getCookie(name)
-    {
-        var cookie = document.cookie,
-            value = null,
-            start = cookie.indexOf(" " + name + "=");
-    
-        if (start == -1) {
-            start = cookie.indexOf(name + "=");
+    function getUserObject(usernameSet, username) {
+        username = (isSet(usernameSet)) ? usernameSet : username;
+        var userObject = {
+            'userId': userId,
+            'username': username
+        };
+
+        return userObject;
+    }
+
+    function setInitialUsername(username) {
+        // set initial username cookie
+        setCookie('username', username);
+        $username.val(username);
+    }
+
+    function toggleAdminToolbar(data) {
+        // show admin toolbar
+        if (true === data.admin) {
+            $('.admin-toolbar').show();
+        } else {
+            $('.admin-toolbar').hide();
         }
-    
-        if (start !== -1) {
-            start = cookie.indexOf("=", start) + 1;
-            var end = cookie.indexOf(";", start);
-            if (end == -1) {
-                end = cookie.length;
+    }
+
+    function setUserData(data, userList) {
+        var userList = data;
+
+        if (isSet(data.userId) && isSet(data.users)) {
+            userList = data.users;
+
+            // set initial userId cookie
+            setCookie('userId', data.userId);
+
+            toggleAdminToolbar(data);
+        }
+
+        setUserList(userList);
+    }
+
+    function closeDesk(data) {
+        if (data.table) {
+            $('.vote-buttons').find('.card').prop('disabled', true);
+        }
+
+        for (var x in data.cards) {
+            var user = '#' + x;
+            if (data.cards.hasOwnProperty(x) && !helpers.isSet(data.cards[x])) {
+                $(user).find('.cardValue').children('span').text(data.cards[x].value);
             }
-            value = decodeURI(cookie.substring(start, end));
         }
-    
-        return value;
-    }
-
-    /**
-     * checks if variable is set
-     *
-     * @param variable
-     * @returns {boolean}
-     */
-    function isSet(variable) {
-        return !(null === variable || undefined === variable || "" === variable);        
     }
 });
+
+
+// @todo should be part of own helper file
+/**
+ * Set a cookie
+ *
+ * @param name
+ * @param value
+ * @param expiration
+ */
+function setCookie(name, value, expiration)
+{
+    var cookieValue, expire;
+    cookieValue = null;
+    expire = new Date();
+
+    if (undefined === expiration) {
+        expiration = 1000 * 1800; // 1/2 hour in milliseconds
+    }
+
+    expire.setTime(expire.getTime() + expiration);
+    cookieValue = encodeURI(value) + "; expires=" + expire.toUTCString();
+    document.cookie = name + "=" + cookieValue;
+}
+
+/**
+ * read a cookie by name
+ *
+ * @param name
+ * @returns {string}
+ */
+function getCookie(name)
+{
+    var cookie = document.cookie,
+        value = null,
+        start = cookie.indexOf(" " + name + "=");
+
+    if (start == -1) {
+        start = cookie.indexOf(name + "=");
+    }
+
+    if (start !== -1) {
+        start = cookie.indexOf("=", start) + 1;
+        var end = cookie.indexOf(";", start);
+        if (end == -1) {
+            end = cookie.length;
+        }
+        value = decodeURI(cookie.substring(start, end));
+    }
+
+    return value;
+}
+
+/**
+ * checks if variable is set
+ *
+ * @param variable
+ * @returns {boolean}
+ */
+function isSet(variable) {
+    return !(null === variable || undefined === variable || "" === variable);
+}

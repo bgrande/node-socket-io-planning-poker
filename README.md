@@ -15,11 +15,12 @@
 * Michael Kleinschnitz
 
 # TODO
-1) modularize and refactor (code duplicates) using objects and separate jquery usage from socket.io usage
+1) modularize and refactor (code duplicates) using objects and separate jquery usage from socket.io usage -> create jquery extension?
 2) administration (close round, set (ticket) topic, kick (inactive) users)
 3) allow visitors or enable roles (like Scrum Master, ...)
 4) set ticket topic for current table
 5) tests
+6) error handling right
 Later:
 * enable multiple sessions
 * mark highest and lowest vote
