@@ -102,9 +102,9 @@ $(function () {
 
             /* @todo bad style -> separate html from js */
             if (undefined === cardValue || null === cardValue || '' == cardValue) {
-                card = '<div class="card-background" style="background-image: url(\'img/cardback.gif\'); border: 0; height: 8em;"></div>';
+                card = '<div class="card-background" style="background-image: url(\'img/cardback.gif\'); border: 0; height: 9em;"></div>';
             } else {
-                card = '<h1 class="cardValue caption" style="margin: auto; height: 3.1em"><span>' + cardValue + '</span></h1>';
+                card = '<h1 class="cardValue" style="font-size: 4em"><span>' + cardValue + '</span></h1>';
             }
     
             // '<button type=\"button\" class=\"card btn btn-small\" style=\"float: right;\">X</button>'
@@ -116,13 +116,15 @@ $(function () {
                 "<li class=\"list-group-item\"" + style + ">" + name + " </li>"
             );
             $cardList.append(
-                "<div class=\"col-lg-2 card\" id=\"" + name + "\" style=\"margin: auto;\">" +
+                "<div class=\"col-lg-2 card\" id=\"" + name + "\" style=\"text-align: center\">" +
                 "    <div class=\"caption\"><h5>" + name + "</h5></div>" +
                 "    <div class=\"thumbnail\" " + style + ">" + card + "</div>" +
                 "</div>"
             );
 
             $cardList.find('.thumbnail').css('padding', 0);
+            $cardList.find('.thumbnail').css('height', '9em');
+            $cardList.find('.thumbnail').css('margin', 'auto');
         }
     };
     
