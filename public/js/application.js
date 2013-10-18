@@ -104,7 +104,7 @@ $(function () {
             if (undefined === cardValue || null === cardValue || '' == cardValue) {
                 card = '<div class="card-background" style="background-image: url(\'img/cardback.gif\'); border: 0; height: 9em;"></div>';
             } else {
-                card = '<h1 class="cardValue" style="font-size: 4em"><span>' + cardValue + '</span></h1>';
+                card = '<h1 class="cardValue"><span>' + cardValue + '</span></h1>';
             }
     
             // '<button type=\"button\" class=\"card btn btn-small\" style=\"float: right;\">X</button>'
