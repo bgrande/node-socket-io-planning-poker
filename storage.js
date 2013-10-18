@@ -3,15 +3,15 @@
 var helpers = require('./helpers');
 
 module.exports = {
-    'admin': null,
-    'isOpen': true,
-    'users': {},
-    'tables': [],
-    'allowedCardValues': [
+    admin: null,
+    isOpen: true,
+    users: {},
+    tables: [],
+    allowedCardValues: [
         0, '1/2', 1, 2, 3, 5, 8, 13, 20, 40, 100, '?'
     ],
-    'helper': null,
-    'tickets': [],
+    helper: null,
+    ticket: null,
     /**
      * function to map list of userId identified uers to array
      *
@@ -19,7 +19,7 @@ module.exports = {
      *
      * @returns {users: Array}
      */
-    'getUsers': function (userId) {
+    getUsers: function (userId) {
         var userList = {
                 'users': []
             },
@@ -54,7 +54,7 @@ module.exports = {
      *
      * @returns void
      */
-    'updateUsername': function (data, id) {
+    updateUsername: function (data, id) {
         if ('string' == typeof data) {
             if (!this.users[id]) {
                 this.users[id] = {};
@@ -69,7 +69,7 @@ module.exports = {
      *
      * @returns object
      */
-    'getCardValuesByUsername': function (cards) {
+    getCardValuesByUsername: function (cards) {
         var cardList = {},
             x;
 
@@ -89,7 +89,7 @@ module.exports = {
      *
      * @returns bool
      */
-    'checkCardValue': function (data) {
+    checkCardValue: function (data) {
         for (var i = 0; i < this.allowedCardValues.length; i++) {
             if (data == this.allowedCardValues[i]) {
                 return true;
@@ -104,7 +104,7 @@ module.exports = {
      *
      * @returns bool
      */
-    'checkIfAllCardsSet': function (tableCount) {
+    checkIfAllCardsSet: function (tableCount) {
         var cardCount, userCount, users, cards;
 
         cardCount = userCount = 0;
@@ -123,7 +123,7 @@ module.exports = {
      *
      * @returns bool
      */
-    'checkUsername': function (data) {
+    checkUsername: function (data) {
         var x;
 
         for (x in this.users) {
@@ -133,29 +133,29 @@ module.exports = {
         }
         return true;
     },
-    'setAdmin': function(userId) {
+    setAdmin: function(userId) {
         if (helpers.isSet(userId)) {
             this.admin = userId;
         }
     },
-    'getAdmin': function() {
+    getAdmin: function() {
         return this.admin;
     },
-    'isAdmin': function(id) {
+    isAdmin: function(id) {
         return id === this.getAdmin();
     },
-    'addTicket': function(ticket) {
-        this.tickets.push(ticket);
+    updateTicket: function(ticket) {
+        this.ticket = ticket;
     },
-    'getTickets': function() {
-        return this.tickets;
+    getTicket: function() {
+        return this.ticket;
     },
-    'removeUser': function(id) {
+    removeUser: function(id) {
         if (this.users.hasOwnProperty(id)) {
             delete this.users[id];
         }
     },
-    'resetTable': function(index) {
+    resetTable: function(index) {
         var x;
 
         if (0 < this.tables.length) {
@@ -170,7 +170,7 @@ module.exports = {
             }
         }
     },
-    'getCurrentTableIndex': function() {
+    getCurrentTableIndex: function() {
         return this.tables.length - 1;
     }
 };

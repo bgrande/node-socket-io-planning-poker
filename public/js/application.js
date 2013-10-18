@@ -20,6 +20,7 @@ $(function () {
     socket.on('users', function(data) {
         if (!isSet(data.error)) {
             setUserData(data);
+            setTicket(data.ticket);
         } else {
             // @todo make error handling right
             alert('it did not work: ' + data.error);
@@ -34,18 +35,10 @@ $(function () {
         closeDesk(data);
     });
 
-    socket.on('changedTickets', function(data) {
-        $('#ticketList').html('');
-        for (var i in data) {
-            $('#ticketList').append('<li>' + data[i].name + '</li>');
-        }
+    socket.on('updatedTicket', function(data) {
+        setTicket(data);
     });
 
-    $('.add-ticket').on('click', function () {
-        var ticket = $('#ticket').val();
-        socket.emit('addTicket', {'name': ticket})
-    });
-    
     $('.change-name').on('click', function () {
         var newName = $('#username').val();
         socket.emit('changeUsername', newName);
@@ -56,6 +49,17 @@ $(function () {
     $username.on('keyup', function(e) {
         if (e.keyCode == 13) {
             $('.change-name').trigger('click');
+        }
+    });
+
+    $('.update-ticket').on('click', function () {
+        var ticket = $('.ticket-name').val();
+        socket.emit('updateTicket', ticket);
+    });
+
+    $('.ticket-name').on('keyup', function(e) {
+        if (e.keyCode == 13) {
+            $('.update-ticket').trigger('click');
         }
     });
     
@@ -166,12 +170,16 @@ $(function () {
         $username.val(username);
     }
 
-    function toggleAdminToolbar(data) {
+    function toggleAdminMode(data) {
         // show admin toolbar
         if (true === data.admin) {
             $('.admin-toolbar').show();
+            $('.ticket-text').hide();
+            $('.update-ticket-group').show();
         } else {
             $('.admin-toolbar').hide();
+            $('.ticket-text').show();
+            $('.update-ticket-group').hide();
         }
     }
 
@@ -184,7 +192,7 @@ $(function () {
             // set initial userId cookie
             setCookie('userId', data.userId);
 
-            toggleAdminToolbar(data);
+            toggleAdminMode(data);
         }
 
         setUserList(userList);
@@ -201,6 +209,11 @@ $(function () {
                 $(user).find('.cardValue').children('span').text(data.cards[x].value);
             }
         }
+    }
+
+    function setTicket(name) {
+        $('.ticket-text').text(name);
+        $('.ticket-name').val(name);
     }
 });
 

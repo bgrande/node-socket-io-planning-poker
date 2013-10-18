@@ -109,9 +109,10 @@ io.sockets.on('connection', function(socket) {
         var userList = storage.getUsers(userId);
 
         socket.emit('users', {
-            'userId': userId,
-            'users': userList,
-            'admin': storage.isAdmin(userId)
+            userId: userId,
+            users: userList,
+            admin: storage.isAdmin(userId),
+            ticket: storage.getTicket()
         });
         socket.broadcast.emit('users', userList)
     });
@@ -185,10 +186,15 @@ io.sockets.on('connection', function(socket) {
         socket.broadcast.emit('users', userList);
     });
 
-    socket.on('addTicket', function(data) {
-        storage.addTicket(data);
-        socket.emit('changedTickets', storage.getTickets());
-        socket.broadcast.emit('changedTickets', storage.getTickets());
+    socket.on('updateTicket', function(data) {
+        if (storage.isAdmin(userId)) {
+            storage.updateTicket(data);
+
+            var ticket = storage.getTicket();
+
+            socket.emit('updatedTicket', ticket);
+            socket.broadcast.emit('updatedTicket', ticket);
+        }
     });
 
     socket.on('resetTable', function(data) {

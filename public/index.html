@@ -20,17 +20,6 @@
                                 <button class="btn btn-default change-name" type="button">Change!</button>
                             </span>
                         </div>
-
-                        <div class="input-group">
-                            <input id="ticket" type="text" class="form-control" placeholder="Ticket" />
-                            <span class="input-group-btn">
-                                <button class="btn btn-default add-ticket" type="button">Add ticket!</button>
-                            </span>
-                        </div>
-
-                        <div id="ticketList">
-
-                        </div>
                     </div>
                     <div class="col-lg-1">
                     </div>
@@ -95,12 +84,20 @@
                     </div>
                 </div>
 
-                <div class="container">
-                    <div class="row topic">
-                        <h3 class="ticket-text">Current topic has to be described here</h3>
+                <div class="row">
+                    <div class="row topic btn-toolbar">
+                        <div class="col-lg-6 ">
+                            <div class="input-group  update-ticket-group" style="margin-bottom: .5em;">
+                                <input type="text" class="form-control ticket-name" placeholder="Current topic has to be described here" />
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default update-ticket" type="button">update ticket</button>
+                                </span>
+                            </div>
+                            <h3 class="ticket-text">Current topic has to be described here</h3>
+                        </div>
                     </div>
 
-                    <div class="row btn-toolbar well well-large" id="cardlist">
+                    <div class="row well well-large" id="cardlist">
                         <!-- socket.io autofill and update -->
                     </div>
                 </div>
