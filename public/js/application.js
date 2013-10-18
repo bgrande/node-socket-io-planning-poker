@@ -102,9 +102,9 @@ $(function () {
 
             /* @todo bad style -> separate html from js */
             if (undefined === cardValue || null === cardValue || '' == cardValue) {
-                card = '<div class="card-background"></div>';
+                card = '<div class="card-background" style="background-image: url(\'img/cardback.gif\'); border: 0; height: 8em;"></div>';
             } else {
-                card = '<h1 class="cardValue caption" style="margin: auto"><span>' + cardValue + '</span></h1>';
+                card = '<h1 class="cardValue caption" style="margin: auto; height: 3.1em"><span>' + cardValue + '</span></h1>';
             }
     
             // '<button type=\"button\" class=\"card btn btn-small\" style=\"float: right;\">X</button>'
@@ -116,13 +116,13 @@ $(function () {
                 "<li class=\"list-group-item\"" + style + ">" + name + " </li>"
             );
             $cardList.append(
-                "<div class=\"col-lg-2 card\" id=\"" + name + "\" style=\"margin: auto\">" +
-                    "    <div class=\"thumbnail\" " + style + ">" +
-                    "      <div class=\"caption\"><h5>" + name + "</h5></div>" +
-                    card +
-                    "    </div>" +
-                    "</div>"
+                "<div class=\"col-lg-2 card\" id=\"" + name + "\" style=\"margin: auto;\">" +
+                "    <div class=\"caption\"><h5>" + name + "</h5></div>" +
+                "    <div class=\"thumbnail\" " + style + ">" + card + "</div>" +
+                "</div>"
             );
+
+            $cardList.find('.thumbnail').css('padding', 0);
         }
     };
     
