@@ -3,8 +3,7 @@
  *
  * @category  [[category]]
  * @copyright [[Copyright]]
- * @author    Benedikt Grande <benedikt.grande@mayflower.de>
- * @author    Diana Hartmann <diana.hartmann@mayflower.de>
+ *
  */
 
 var port, app, server, io, storage, helpers;
