@@ -1,7 +1,8 @@
 # About
 * single session scrum poker tool
 * first user to connect becomes admin
-* right now the admin is able to reset the table (while open and closed)
+* admin is able to reset the table (while open and closed)
+* admin can edit current ticket topic
 * if all users voted the table is closed and all votes are shown
 
 # Run
@@ -19,7 +20,6 @@
 1) modularize and refactor (code duplicates) using objects
 2) administration (close round, set (ticket) topic, kick (inactive) users)
 3) allow visitors or enable roles (like Scrum Master, ...)
-4) set ticket topic for current table
 5) tests
 6) error handling right
 
