@@ -18,11 +18,10 @@
 # TODO
 0) separate jquery and logic usage from socket.io usage
 1) modularize and refactor (code duplicates) using objects
-2) better cards
-3) administration (close round, kick (inactive) users)
-4) allow visitors or enable roles (like Scrum Master, ...)
-6) tests
-7) error handling right
+2) administration (close round, kick (inactive) users)
+3) allow visitors or enable roles (like Scrum Master, ...)
+4) tests
+5) error handling right
 
 Later:
 * enable multiple sessions
