@@ -2,9 +2,9 @@ $(function () {
     'use strict';
     var $username, host, socket, cookieUsername, userId, username, usernameSet;
 
-    $username = $('#username');
     host = window.location.hostname;
     socket = io.connect(host);
+    $username = $('#username');
     cookieUsername = getCookie('username');
     userId = getCookie('userId');
     username = (isSet(cookieUsername)) ? cookieUsername : 'name' + Math.round(Math.random() * Math.random() * 100);
