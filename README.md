@@ -19,8 +19,7 @@
 * Fix Table closing
 
 # TODO
-0) separate jquery and logic usage from socket.io usage
-1) modularize and refactor (code duplicates) using objects
+1) create a jquery socket.io extension
 2) administration (close round, kick (inactive) users)
 3) allow visitors or enable roles (like Scrum Master, ...)
 4) tests

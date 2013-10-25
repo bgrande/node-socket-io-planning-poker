@@ -3,11 +3,10 @@ $(function () {
 
     var $username = $('#username'),
         host = window.location.hostname,
-        socket = io.connect(host),
-        usernameSet = $username.val();
+        socket = io.connect(host);
 
     // set and send initial username
-    User.setInitialUsername(usernameSet);
+    User.setInitialUsername($username.val());
 
     socket.on('connect', function() {
         socket.emit('username', User.getUserObject());

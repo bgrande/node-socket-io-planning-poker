@@ -96,12 +96,12 @@ var User = (function(helper) {
     };
 
     /**
-     * expose
+     * expose api
      */
     return {
         setUsername: setUsername,
         getUserObject: getUserObject,
         setInitialUsername: setInitialUsername,
         setUserData: setUserData
-    }
+    };
 })(helper);

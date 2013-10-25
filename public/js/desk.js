@@ -13,6 +13,7 @@ var Desk = (function(helper) {
         if (false === cardValue) {
             cardValue = 'nice try!';
         }
+
         _setCardValue(cardValue, username)
     };
 
@@ -54,10 +55,13 @@ var Desk = (function(helper) {
         }
     };
 
+    /**
+     * expose api
+     */
     return {
         manageCards: manageCards,
         closeDesk: closeDesk,
         setTicket: setTicket,
         resetDesk: resetDesk
-    }
+    };
 })(helper);

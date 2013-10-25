@@ -1,5 +1,6 @@
 var helper = (function() {
     'use strict';
+
     /**
      * Set a cookie
      *
@@ -61,7 +62,7 @@ var helper = (function() {
     };
 
     /**
-     * expose
+     * expose api
      */
     return {
         isSet: isSet,
