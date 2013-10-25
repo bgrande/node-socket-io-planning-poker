@@ -19,7 +19,7 @@
 * Fix Table closing
 
 # TODO
-1) create a jquery socket.io extension
+1) refactor module methods
 2) administration (close round, kick (inactive) users)
 3) allow visitors or enable roles (like Scrum Master, ...)
 4) tests
@@ -30,3 +30,4 @@ Later:
 * enable multiple sessions
 * mark highest and lowest vote
 * test angular.js
+* maybe create a jquery socket.io extension
