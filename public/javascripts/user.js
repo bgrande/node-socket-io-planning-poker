@@ -71,7 +71,7 @@ var User = (function(helper) {
             if (helper.isSet(cardValue)) {
                 card = '<h1 class="cardValue"><span>' + cardValue + '</span></h1>';
             } else {
-                card = '<div class="card-background" style="background-image: url(\'img/cardback.gif\'); border: 0; height: 9em;"></div>';
+                card = '<div class="card-background" style="background-image: url(\'images/cardback.gif\'); border: 0; height: 9em;"></div>';
             }
 
             // '<button type=\"button\" class=\"card btn btn-small\" style=\"float: right;\">X</button>'

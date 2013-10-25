@@ -19,7 +19,7 @@
 * Fix Table closing
 
 # TODO
-1) refactor module methods
+1) refactor module methods and separate html from js
 2) administration (close round, kick (inactive) users)
 3) allow visitors or enable roles (like Scrum Master, ...)
 4) tests
