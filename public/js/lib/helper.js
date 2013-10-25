@@ -68,5 +68,4 @@ var helper = (function() {
         getCookie: getCookie,
         setCookie: setCookie
     };
-
 })();
