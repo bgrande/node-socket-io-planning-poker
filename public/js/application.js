@@ -70,6 +70,4 @@ $(function () {
         socket.emit('resetTable', helper.getCookie('userId'));
         socket.on('resetTableSuccess', Desk.resetDesk);
     });
-
-
 });
