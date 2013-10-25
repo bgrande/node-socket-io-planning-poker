@@ -6,12 +6,12 @@ $(function () {
         socket = io.connect(host),
         usernameSet = $username.val();
 
-    socket.on('connect', function() {
-        var userObject = User.getUserObject(usernameSet, User.getUsername());
-        socket.emit('username', userObject);
-    });
+    // set and send initial username
+    User.setInitialUsername(usernameSet);
 
-    User.setInitialUsername(User.getUsername());
+    socket.on('connect', function() {
+        socket.emit('username', User.getUserObject());
+    });
 
     socket.on('users', function(data) {
         if (!helper.isSet(data.error)) {
@@ -23,23 +23,19 @@ $(function () {
         }
     });
 
-    socket.on('sendCard', function(data) {
-        Desk.manageCards(data);
-    });
+    socket.on('sendCard', Desk.manageCards);
 
-    socket.on('closeDesk', function(data) {
-        Desk.closeDesk(data);
-    });
+    socket.on('closeDesk', Desk.closeDesk);
 
-    socket.on('updatedTicket', function(data) {
-        Desk.setTicket(data);
-    });
+    socket.on('updatedTicket', Desk.setTicket);
+
 
     $('.change-name').on('click', function () {
         var newName = $('#username').val();
-        socket.emit('changeUsername', newName);
+
         // set new username
-        helper.setCookie('username', newName);
+        User.setUsername(newName);
+        socket.emit('changeUsername', newName);
     });
 
     $username.on('keyup', function(e) {
@@ -49,8 +45,7 @@ $(function () {
     });
 
     $('.update-ticket').on('click', function () {
-        var ticket = $('.ticket-name').val();
-        socket.emit('updateTicket', ticket);
+        socket.emit('updateTicket', $('.ticket-name').val());
     });
 
     $('.ticket-name').on('keyup', function(e) {
@@ -60,12 +55,13 @@ $(function () {
     });
     
     $('.card').on('click', function() {
-        var openToken = Math.random();
+        var openToken = Math.random(),
+            cardValue = $(this).text();
 
         socket.emit('isOpen', openToken);
         socket.on('isOpenSuccess', function(data) {
             if (openToken === data) {
-                socket.emit('setCard', $(this).text());
+                socket.emit('setCard', cardValue);
             }
         });
     });
@@ -74,4 +70,6 @@ $(function () {
         socket.emit('resetTable', helper.getCookie('userId'));
         socket.on('resetTableSuccess', Desk.resetDesk);
     });
+
+
 });

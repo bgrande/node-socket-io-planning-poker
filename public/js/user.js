@@ -4,23 +4,19 @@ var User = (function(helper) {
         _userId = helper.getCookie('userId'),
         _username = (helper.isSet(_cookieUsername)) ? _cookieUsername : 'name' + Math.round(Math.random() * Math.random() * 100);
 
-    var getUsername = function() {
+    var _getUsername = function() {
         return _username;
     };
 
-    var getUserObject = function(usernameSet, name) {
-        _username = (helper.isSet(usernameSet)) ? usernameSet : name;
-
+    var getUserObject = function() {
         return {
             userId: _userId,
-            username: _username
+            username: _getUsername()
         };
     };
 
-    var setInitialUsername = function(name) {
-        // set initial username cookie
-        helper.setCookie('username', name);
-        _setUsername(name);
+    var setInitialUsername = function(usernameSet) {
+        setUsername((helper.isSet(usernameSet)) ? usernameSet : _getUsername());
     };
 
     var setUserData = function(data) {
@@ -38,9 +34,11 @@ var User = (function(helper) {
         _setUserList(userList);
     };
 
-    var _setUsername = function(name) {
-        _username = name;
+    var setUsername = function(name) {
         $('#username').val(name);
+        _username = name;
+        // set initial username cookie
+        helper.setCookie('username', name);
     };
 
     var _toggleAdminMode = function(data) {
@@ -101,7 +99,7 @@ var User = (function(helper) {
      * expose
      */
     return {
-        getUsername: getUsername,
+        setUsername: setUsername,
         getUserObject: getUserObject,
         setInitialUsername: setInitialUsername,
         setUserData: setUserData

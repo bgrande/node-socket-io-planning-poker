@@ -1,18 +1,6 @@
 var Desk = (function(helper) {
     'use strict';
 
-    var setCardValue = function (data, username) {
-        var $card = $('#' + username),
-            $cardValue = $card.find('.cardValue');
-
-        if ($cardValue.text()) {
-            $cardValue.html('<span>' + data + '</span>');
-        } else {
-            $card.find('.card-background').remove();
-            $card.find('.thumbnail').append('<h1 class="cardValue caption" style="margin: auto"><span>' + data + '</span></h1>');
-        }
-    };
-
     var manageCards = function(data) {
         var username = helper.getCookie('username'),
             cardValue = data;
@@ -25,8 +13,7 @@ var Desk = (function(helper) {
         if (false === cardValue) {
             cardValue = 'nice try!';
         }
-
-        setCardValue(cardValue, username)
+        _setCardValue(cardValue, username)
     };
 
     var closeDesk = function(data) {
@@ -52,6 +39,18 @@ var Desk = (function(helper) {
             $('.vote-buttons').find('.card').prop('disabled', false);
         } else {
             alert('it did not work: ' + data.error);
+        }
+    };
+
+    var _setCardValue = function (data, username) {
+        var $card = $('#' + username),
+            $cardValue = $card.find('.cardValue');
+
+        if ($cardValue.text()) {
+            $cardValue.html('<span>' + data + '</span>');
+        } else {
+            $card.find('.card-background').remove();
+            $card.find('.thumbnail').append('<h1 class="cardValue caption" style="margin: auto"><span>' + data + '</span></h1>');
         }
     };
 
