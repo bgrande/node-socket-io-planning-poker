@@ -23,7 +23,7 @@ var Desk = (function(helper) {
 
         for (var x in data.cards) {
             var user = '#' + x;
-            if (data.cards.hasOwnProperty(x) && !helper.isSet(data.cards[x])) {
+            if (data.cards.hasOwnProperty(x) && helper.isSet(data.cards[x])) {
                 $(user).find('.cardValue').children('span').text(data.cards[x].value);
             }
         }

@@ -148,6 +148,7 @@ io.sockets.on('connection', function(socket) {
         socket.emit('sendCard', data);
 
         var closedDesk;
+
         if (storage.checkIfAllCardsSet(tableCount)) {
             var cardValues = storage.getCardValuesByUsername(storage.tables[tableCount - 1].cards);
             storage.isOpen = false;
