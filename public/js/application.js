@@ -5,9 +5,9 @@ $(function () {
     host = window.location.hostname;
     socket = io.connect(host);
     $username = $('#username');
-    cookieUsername = getCookie('username');
-    userId = getCookie('userId');
-    username = (isSet(cookieUsername)) ? cookieUsername : 'name' + Math.round(Math.random() * Math.random() * 100);
+    cookieUsername = helper.getCookie('username');
+    userId = helper.getCookie('userId');
+    username = (helper.isSet(cookieUsername)) ? cookieUsername : 'name' + Math.round(Math.random() * Math.random() * 100);
     usernameSet = $username.val();
 
     socket.on('connect', function() {
@@ -18,7 +18,7 @@ $(function () {
     setInitialUsername(username);
 
     socket.on('users', function(data) {
-        if (!isSet(data.error)) {
+        if (!helper.isSet(data.error)) {
             setUserData(data);
             setTicket(data.ticket);
         } else {
@@ -43,7 +43,7 @@ $(function () {
         var newName = $('#username').val();
         socket.emit('changeUsername', newName);
         // set new username
-        setCookie('username', newName);
+        helper.setCookie('username', newName);
     });
 
     $username.on('keyup', function(e) {
@@ -77,7 +77,7 @@ $(function () {
     });
 
     $('.admin-reset').on('click', function() {
-        socket.emit('resetTable', getCookie('userId'));
+        socket.emit('resetTable', helper.getCookie('userId'));
         socket.on('resetTableSuccess', function(data) {
             if (undefined !== data.success && true === data.success) {
                 $('.vote-buttons').find('.card').prop('disabled', false);
@@ -108,7 +108,7 @@ $(function () {
             }
     
             // '<button type=\"button\" class=\"card btn btn-small\" style=\"float: right;\">X</button>'
-            if (name === getCookie('username')) {
+            if (name === helper.getCookie('username')) {
                 style = "style=\"background-color: #82FA58;\"";
             }
     
@@ -141,7 +141,7 @@ $(function () {
     };
 
     function manageCards(data) {
-        var username = getCookie('username'),
+        var username = helper.getCookie('username'),
             cardValue = data;
 
         if ('object' == typeof data) {
@@ -157,7 +157,7 @@ $(function () {
     }
 
     function getUserObject(usernameSet, username) {
-        username = (isSet(usernameSet)) ? usernameSet : username;
+        username = (helper.isSet(usernameSet)) ? usernameSet : username;
         return {
             'userId': userId,
             'username': username
@@ -166,7 +166,7 @@ $(function () {
 
     function setInitialUsername(username) {
         // set initial username cookie
-        setCookie('username', username);
+        helper.setCookie('username', username);
         $username.val(username);
     }
 
@@ -186,11 +186,11 @@ $(function () {
     function setUserData(data) {
         var userList = data;
 
-        if (isSet(data.userId) && isSet(data.users)) {
+        if (helper.isSet(data.userId) && helper.isSet(data.users)) {
             userList = data.users;
 
             // set initial userId cookie
-            setCookie('userId', data.userId);
+            helper.setCookie('userId', data.userId);
 
             toggleAdminMode(data);
         }
@@ -205,7 +205,7 @@ $(function () {
 
         for (var x in data.cards) {
             var user = '#' + x;
-            if (data.cards.hasOwnProperty(x) && !helpers.isSet(data.cards[x])) {
+            if (data.cards.hasOwnProperty(x) && !helper.isSet(data.cards[x])) {
                 $(user).find('.cardValue').children('span').text(data.cards[x].value);
             }
         }
@@ -217,64 +217,3 @@ $(function () {
     }
 });
 
-
-// @todo should be part of own helper file
-/**
- * Set a cookie
- *
- * @param name
- * @param value
- * @param expiration
- */
-function setCookie(name, value, expiration)
-{
-    var cookieValue, expire;
-    cookieValue = null;
-    expire = new Date();
-
-    if (undefined === expiration) {
-        expiration = 1000 * 1800; // 1/2 hour in milliseconds
-    }
-
-    expire.setTime(expire.getTime() + expiration);
-    cookieValue = encodeURI(value) + "; expires=" + expire.toUTCString();
-    document.cookie = name + "=" + cookieValue;
-}
-
-/**
- * read a cookie by name
- *
- * @param name
- * @returns {string}
- */
-function getCookie(name)
-{
-    var cookie = document.cookie,
-        value = null,
-        start = cookie.indexOf(" " + name + "=");
-
-    if (start == -1) {
-        start = cookie.indexOf(name + "=");
-    }
-
-    if (start !== -1) {
-        start = cookie.indexOf("=", start) + 1;
-        var end = cookie.indexOf(";", start);
-        if (end == -1) {
-            end = cookie.length;
-        }
-        value = decodeURI(cookie.substring(start, end));
-    }
-
-    return value;
-}
-
-/**
- * checks if variable is set
- *
- * @param variable
- * @returns {boolean}
- */
-function isSet(variable) {
-    return !(null === variable || undefined === variable || "" === variable);
-}

@@ -1,6 +1,6 @@
 'use strict';
 
-var helpers = require('./helpers');
+var helper = require('./helper');
 
 module.exports = {
     admin: null,
@@ -27,14 +27,14 @@ module.exports = {
             i = 0;
 
         for (x in this.users) {
-            if (this.users.hasOwnProperty(x) && !helpers.isSet(userList.users[i])) {
+            if (this.users.hasOwnProperty(x) && !helper.isSet(userList.users[i])) {
                 userList.users[i] = {};
             }
 
             userList.users[i].username = this.users[x].username;
             userList.users[i].admin = this.users[x].admin;
 
-            if (helpers.isSet(this.users[x].cardValue)) {
+            if (helper.isSet(this.users[x].cardValue)) {
                 userList.users[i].cardValue = '...';
             }
 
@@ -111,8 +111,8 @@ module.exports = {
         users = this.users;
         cards = this.tables[tableCount - 1].cards;
 
-        userCount = helpers.countObject(users);
-        cardCount = helpers.countObject(cards);
+        userCount = helper.countObject(users);
+        cardCount = helper.countObject(cards);
 
         return userCount === cardCount;
     },
@@ -134,7 +134,7 @@ module.exports = {
         return true;
     },
     setAdmin: function(userId) {
-        if (helpers.isSet(userId)) {
+        if (helper.isSet(userId)) {
             this.admin = userId;
         }
     },
@@ -165,7 +165,7 @@ module.exports = {
         this.isOpen = true;
 
         for (x in this.users) {
-            if (this.users.hasOwnProperty(x) && helpers.isSet(this.users[x].cardValue)) {
+            if (this.users.hasOwnProperty(x) && helper.isSet(this.users[x].cardValue)) {
                 this.users[x].cardValue = null;
             }
         }

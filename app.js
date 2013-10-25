@@ -6,13 +6,13 @@
  *
  */
 
-var port, app, server, io, storage, helpers;
+var port, app, server, io, storage, helper;
 
 port    = process.env.PORT || 3000;
 app     = require('express')();
 server  = require('http').createServer(app);
 io      = require('socket.io').listen(server);
-helpers = require('./helpers');
+helper  = require('./helper');
 storage = require('./storage');
 
 // switch to xhr polling for heroku and disable debug output
@@ -78,7 +78,7 @@ io.sockets.on('connection', function(socket) {
         } 
 
         // if we got a new userId update the user and kill the old one!
-        if (oldUserId !== userId && helpers.isSet(storage.users[oldUserId])) {
+        if (oldUserId !== userId && helper.isSet(storage.users[oldUserId])) {
             var table = storage.tables.length - 1,
                 card = storage.tables[table].cards[oldUserId];
             
@@ -119,7 +119,7 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('isOpen', function(data) {
         var response = false;
-        if (helpers.isSet(data) && true === storage.isOpen) {
+        if (helper.isSet(data) && true === storage.isOpen) {
             response = data;
         }
         socket.emit('isOpenSuccess', response);
@@ -161,7 +161,7 @@ io.sockets.on('connection', function(socket) {
     });
 
     socket.on('changeUsername', function(data) {
-        if (!helpers.isSet(data)) {
+        if (!helper.isSet(data)) {
             socket.emit('users', {
                 'error': 'username not allowed!'
             });
@@ -199,7 +199,7 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('resetTable', function(data) {
         var userList;
-        if (helpers.isSet(data) && data === storage.getAdmin() && data === userId) {
+        if (helper.isSet(data) && data === storage.getAdmin() && data === userId) {
             storage.resetTable(storage.getCurrentTableIndex());
 
             userList = storage.getUsers(userId);
