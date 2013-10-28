@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = {
     /**
      * helper function to count object lists
@@ -8,7 +6,9 @@ module.exports = {
      *
      * @returns int
      */
-    countObject: function(object) {
+    countObject: function (object) {
+        'use strict';
+
         var count = 0,
             x;
 
@@ -21,13 +21,15 @@ module.exports = {
     },
 
     /**
-     * @TODO move into helper used by server and frontend app parts
+     * isSet...
      *
      * @param variable
      *
      * @returns boolean
      */
-    isSet: function(variable) {
+    isSet: function (variable) {
+        'use strict';
+
         return !(null === variable || undefined === variable || "" === variable);
     }
 };

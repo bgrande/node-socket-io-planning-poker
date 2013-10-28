@@ -1,5 +1,3 @@
-'use strict';
-
 var helper = require('./helper');
 
 module.exports = {
@@ -20,6 +18,8 @@ module.exports = {
      * @returns {users: Array}
      */
     getUsers: function (userId) {
+        'use strict';
+
         var userList = {
                 'users': []
             },
@@ -29,19 +29,18 @@ module.exports = {
         for (x in this.users) {
             if (this.users.hasOwnProperty(x) && !helper.isSet(userList.users[i])) {
                 userList.users[i] = {};
-            }
+                userList.users[i].username = this.users[x].username;
+                userList.users[i].admin = this.users[x].admin;
 
-            userList.users[i].username = this.users[x].username;
-            userList.users[i].admin = this.users[x].admin;
+                if (helper.isSet(this.users[x].cardValue)) {
+                    userList.users[i].cardValue = '...';
+                }
 
-            if (helper.isSet(this.users[x].cardValue)) {
-                userList.users[i].cardValue = '...';
+                if (userId === x || false === this.isOpen) {
+                    userList.users[i].cardValue = this.users[x].cardValue;
+                }
+                i++;
             }
-
-            if (userId === x || false === this.isOpen) {
-                userList.users[i].cardValue = this.users[x].cardValue;
-            }
-            i++;
         }
 
         return userList;
@@ -55,7 +54,9 @@ module.exports = {
      * @returns void
      */
     updateUsername: function (data, id) {
-        if ('string' == typeof data) {
+        'use strict';
+
+        if ('string' === typeof data) {
             if (!this.users[id]) {
                 this.users[id] = {};
             }
@@ -70,13 +71,14 @@ module.exports = {
      * @returns object
      */
     getCardValuesByUsername: function (cards) {
+        'use strict';
+
         var cardList = {},
             x;
 
         for (x in cards) {
-            if (this.users.hasOwnProperty(x)) {
-                var name = this.users[x].username;
-                cardList[name] = cards[x];
+            if (cards.hasOwnProperty(x) && this.users.hasOwnProperty(x)) {
+                cardList[this.users[x].username] = cards[x];
             }
         }
 
@@ -90,8 +92,12 @@ module.exports = {
      * @returns bool
      */
     checkCardValue: function (data) {
-        for (var i = 0; i < this.allowedCardValues.length; i++) {
-            if (data == this.allowedCardValues[i]) {
+        'use strict';
+
+        var i;
+
+        for (i = 0; i < this.allowedCardValues.length; i++) {
+            if (data === this.allowedCardValues[i]) {
                 return true;
             }
         }
@@ -105,6 +111,8 @@ module.exports = {
      * @returns bool
      */
     checkIfAllCardsSet: function (tableCount) {
+        'use strict';
+
         var cardCount, userCount, users, cards;
 
         cardCount = userCount = 0;
@@ -124,38 +132,62 @@ module.exports = {
      * @returns bool
      */
     checkUsername: function (data) {
+        'use strict';
+
         var x;
 
         for (x in this.users) {
-            if (!this.users.hasOwnProperty(x) || data == this.users[x].username) {
+            if (!this.users.hasOwnProperty(x) || data === this.users[x].username) {
                 return false;
             }
         }
+
         return true;
     },
-    setAdmin: function(userId) {
+
+    setAdmin: function (userId) {
+        'use strict';
+
         if (helper.isSet(userId)) {
             this.admin = userId;
         }
     },
-    getAdmin: function() {
+
+    getAdmin: function () {
+        'use strict';
+
         return this.admin;
     },
-    isAdmin: function(id) {
+
+    isAdmin: function (id) {
+        'use strict';
+
         return id === this.getAdmin();
     },
-    updateTicket: function(ticket) {
+
+    updateTicket: function (ticket) {
+        'use strict';
+
         this.ticket = ticket;
     },
-    getTicket: function() {
+
+    getTicket: function () {
+        'use strict';
+
         return this.ticket;
     },
-    removeUser: function(id) {
+
+    removeUser: function (id) {
+        'use strict';
+
         if (this.users.hasOwnProperty(id)) {
             delete this.users[id];
         }
     },
-    resetTable: function(index) {
+
+    resetTable: function (index) {
+        'use strict';
+
         var x;
 
         if (0 < this.tables.length) {
@@ -170,7 +202,10 @@ module.exports = {
             }
         }
     },
-    getCurrentTableIndex: function() {
+
+    getCurrentTableIndex: function () {
+        'use strict';
+
         return this.tables.length - 1;
     }
 };
