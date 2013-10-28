@@ -9,7 +9,9 @@ var helper = (function () {
      * @param expiration
      */
     var setCookie = function (name, value, expiration) {
-            var cookieValue, expire;
+            var cookieValue,
+                expire;
+
             cookieValue = null;
             expire = new Date();
 
