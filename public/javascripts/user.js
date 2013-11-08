@@ -1,4 +1,4 @@
-var User = (function (helper) {
+var User = (function (helper, $) {
     'use strict';
     var _cookieUsername = helper.getCookie('username'),
         _userId = helper.getCookie('userId'),
@@ -25,16 +25,19 @@ var User = (function (helper) {
         _setUserList = function (data) {
             var $userlist = $('#userlist'),
                 $cardList = $('#cardlist'),
-                i;
+                i,
+                name,
+                cardValue,
+                card,
+                style;
 
             $userlist.empty();
             $cardList.empty();
 
             for (i = 0; i < data.users.length; i++) {
-                var name = data.users[i].username,
-                    cardValue = data.users[i].cardValue,
-                    card,
-                    style = '';
+                name = data.users[i].username;
+                cardValue = data.users[i].cardValue;
+                style = '';
 
                 /* @todo bad style -> separate html from js */
                 if (helper.isSet(cardValue)) {
@@ -72,15 +75,15 @@ var User = (function (helper) {
             };
         },
 
-        setInitialUsername = function (usernameSet) {
-            setUsername((helper.isSet(usernameSet)) ? usernameSet : _getUsername());
-        },
-
         setUsername = function (name) {
             $('#username').val(name);
             _username = name;
             // set initial username cookie
             helper.setCookie('username', name);
+        },
+
+        setInitialUsername = function (usernameSet) {
+            setUsername((helper.isSet(usernameSet)) ? usernameSet : _getUsername());
         },
 
         setUserData = function (data) {
@@ -107,4 +110,4 @@ var User = (function (helper) {
         setInitialUsername: setInitialUsername,
         setUserData: setUserData
     };
-})(helper);
+})(helper, jQuery);

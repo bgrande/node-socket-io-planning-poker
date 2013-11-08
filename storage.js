@@ -6,7 +6,7 @@ module.exports = {
     users: {},
     tables: [],
     allowedCardValues: [
-        0, '1/2', 1, 2, 3, 5, 8, 13, 20, 40, 100, '?'
+        '0', '1/2', '1', '2', '3', '5', '8', '13', '20', '40', '100', '?'
     ],
     helper: null,
     ticket: null,
@@ -136,9 +136,11 @@ module.exports = {
 
         var x;
 
-        for (x in this.users) {
-            if (!this.users.hasOwnProperty(x) || data === this.users[x].username) {
-                return false;
+        if (helper.isSet(this.users)) {
+            for (x in this.users) {
+                if (!this.users.hasOwnProperty(x) || data === this.users[x].username) {
+                    return false;
+                }
             }
         }
 

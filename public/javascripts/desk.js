@@ -1,4 +1,4 @@
-var Desk = (function (helper) {
+var Desk = (function (helper, $) {
     'use strict';
 
     var _setCardValue = function (data, username) {
@@ -9,7 +9,9 @@ var Desk = (function (helper) {
                 $cardValue.html('<span>' + data + '</span>');
             } else {
                 $card.find('.card-background').remove();
-                $card.find('.thumbnail').append('<h1 class="cardValue caption" style="margin: auto"><span>' + data + '</span></h1>');
+                $card.find('.thumbnail').append(
+                    '<h1 class="cardValue caption" style="margin: auto"><span>' + data + '</span></h1>'
+                );
             }
         },
 
@@ -30,14 +32,18 @@ var Desk = (function (helper) {
         },
 
         closeDesk = function (data) {
+            var x, user;
+
             if (data.table) {
                 $('.vote-buttons').find('.card').prop('disabled', true);
             }
 
-            for (var x in data.cards) {
-                var user = '#' + x;
-                if (data.cards.hasOwnProperty(x) && helper.isSet(data.cards[x])) {
-                    $(user).find('.cardValue').children('span').text(data.cards[x].value);
+            if (helper.isSet(data.cards)) {
+                for (x in data.cards) {
+                    user = '#' + x;
+                    if (data.cards.hasOwnProperty(x) && helper.isSet(data.cards[x])) {
+                        $(user).find('.cardValue').children('span').text(data.cards[x].value);
+                    }
                 }
             }
         },
@@ -48,10 +54,10 @@ var Desk = (function (helper) {
         },
 
         resetDesk = function (data) {
-            if (undefined !== data.success && true === data.success) {
+            if (true === data.success) {
                 $('.vote-buttons').find('.card').prop('disabled', false);
             } else {
-                alert('it did not work: ' + data.error);
+                window.alert('it did not work: ' + data.error);
             }
         };
 
@@ -64,4 +70,4 @@ var Desk = (function (helper) {
         setTicket: setTicket,
         resetDesk: resetDesk
     };
-})(helper);
+})(helper, jQuery);

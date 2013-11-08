@@ -18,7 +18,7 @@ $(function () {
             Desk.setTicket(data.ticket);
         } else {
             // @todo make error handling right
-            alert('it did not work: ' + data.error);
+            window.alert('it did not work: ' + data.error);
         }
     });
 
