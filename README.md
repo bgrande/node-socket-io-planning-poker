@@ -19,15 +19,17 @@
 * Fix Table closing
 
 # TODO
-1) refactor module methods and separate html from js
+0) refactor module methods
+1) separate html from js
 2) administration (close round, kick (inactive) users)
 3) allow visitors or enable roles (like Scrum Master, ...)
 4) tests
-5) error handling right
-6) Use camera for card recognizing! (qr-code?)
+5) error handling nice
+6) allow different kinds of poker measurement
 
 Later:
 * enable multiple sessions
 * mark highest and lowest vote
 * test angular.js
 * maybe create a jquery socket.io extension
+* Use camera for card recognizing (qr-code?)
